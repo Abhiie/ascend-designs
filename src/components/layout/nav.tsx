@@ -2,6 +2,7 @@
 
 import Image from "next/image";
 import Link from "next/link";
+import { usePathname } from "next/navigation";
 import { useEffect, useState } from "react";
 import { navLinks, siteConfig } from "@/lib/site-config";
 import { useTheme } from "@/components/providers/theme-provider";
@@ -10,12 +11,13 @@ import { ThemeSwitch } from "@/components/ui/theme-switch";
 export function Nav() {
   const [scrolled, setScrolled] = useState(false);
   const [menuOpen, setMenuOpen] = useState(false);
+  const pathname = usePathname();
   const { theme } = useTheme();
 
-  // At the top of the page the bar floats over the hero photograph, which is
-  // dark in both themes — so it switches to a light-on-dark treatment there
-  // and back to the theme palette once the surface slides underneath.
-  const onDark = !scrolled && !menuOpen;
+  const isHomePage = pathname === "/";
+  // At the top of the Home page the bar floats over the dark hero photograph.
+  // On inner pages or when scrolled/open, it uses the standard surface palette.
+  const onDark = isHomePage && !scrolled && !menuOpen;
 
   useEffect(() => {
     let ticking = false;
@@ -43,8 +45,8 @@ export function Nav() {
       className="fixed inset-x-0 top-0 z-50 border-b transition-[padding,background-color] duration-500"
       style={{
         borderColor: onDark ? "rgba(255,255,255,0.14)" : "var(--line)",
-        backgroundColor: scrolled ? "var(--surface)" : "transparent",
-        backdropFilter: scrolled ? "blur(8px)" : "none",
+        backgroundColor: scrolled || !isHomePage ? "var(--surface)" : "transparent",
+        backdropFilter: scrolled || !isHomePage ? "blur(8px)" : "none",
       }}
     >
       <div
@@ -52,7 +54,7 @@ export function Nav() {
           scrolled ? "py-3" : "py-5 sm:py-7"
         }`}
       >
-        <Link href="#top" className="relative z-10 block h-8 w-[132px] sm:h-9 sm:w-[148px]">
+        <Link href="/" className="relative z-10 block h-8 w-[132px] sm:h-9 sm:w-[148px]">
           <Image
             src={
               onDark || theme === "dark" ? "/ascend-logo-dark.png" : "/ascend-logo.png"
@@ -66,23 +68,30 @@ export function Nav() {
         </Link>
 
         <nav className="hidden items-center gap-9 lg:flex" aria-label="Primary">
-          {navLinks.map((link) => (
-            <Link
-              key={link.href}
-              href={link.href}
-              className={`label transition-colors hover:text-gold ${
-                onDark ? "text-white/80" : "text-ink-soft"
-              }`}
-            >
-              {link.label}
-            </Link>
-          ))}
+          {navLinks.map((link) => {
+            const isActive = pathname === link.href;
+            return (
+              <Link
+                key={link.href}
+                href={link.href}
+                className={`label transition-colors hover:text-gold ${
+                  isActive
+                    ? "text-gold font-medium"
+                    : onDark
+                    ? "text-white/80"
+                    : "text-ink-soft"
+                }`}
+              >
+                {link.label}
+              </Link>
+            );
+          })}
         </nav>
 
         <div className="hidden items-center gap-8 lg:flex">
           <ThemeSwitch tone={onDark ? "light" : "default"} />
           <Link
-            href="#contact"
+            href="/contact"
             className={`label flex items-center gap-2 border px-4 py-2.5 transition-colors hover:border-gold hover:text-gold ${
               onDark ? "border-white/35 text-white" : "border-line-strong text-ink"
             }`}
@@ -117,17 +126,22 @@ export function Nav() {
         }`}
       >
         <nav className="flex flex-col gap-1" aria-label="Mobile">
-          {navLinks.map((link, i) => (
-            <Link
-              key={link.href}
-              href={link.href}
-              onClick={() => setMenuOpen(false)}
-              className="border-b border-line py-5 font-display text-4xl text-ink transition-colors hover:text-gold"
-              style={{ transitionDelay: menuOpen ? `${i * 40}ms` : "0ms" }}
-            >
-              {link.label}
-            </Link>
-          ))}
+          {navLinks.map((link, i) => {
+            const isActive = pathname === link.href;
+            return (
+              <Link
+                key={link.href}
+                href={link.href}
+                onClick={() => setMenuOpen(false)}
+                className={`border-b border-line py-5 font-display text-4xl transition-colors ${
+                  isActive ? "text-gold" : "text-ink hover:text-gold"
+                }`}
+                style={{ transitionDelay: menuOpen ? `${i * 40}ms` : "0ms" }}
+              >
+                {link.label}
+              </Link>
+            );
+          })}
         </nav>
         <div className="flex items-center justify-between">
           <ThemeSwitch />
@@ -139,3 +153,4 @@ export function Nav() {
     </header>
   );
 }
+
