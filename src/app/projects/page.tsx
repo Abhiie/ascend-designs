@@ -4,6 +4,7 @@ import { Portfolio } from "@/components/sections/portfolio";
 import { Architecture } from "@/components/sections/architecture";
 import { Interiors } from "@/components/sections/interiors";
 import { AdLiving } from "@/components/sections/ad-living";
+import { InstagramWall } from "@/components/sections/instagram-wall";
 import { FinalCta } from "@/components/sections/final-cta";
 import { siteConfig } from "@/lib/site-config";
 
@@ -34,6 +35,7 @@ export default function ProjectsPage() {
       <Architecture />
       <Interiors />
       <AdLiving />
+      <InstagramWall />
       <FinalCta />
     </main>
   );

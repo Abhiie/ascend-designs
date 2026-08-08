@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import { Reveal } from "@/components/motion/reveal";
 import { Faq } from "@/components/sections/faq";
 import { LocationMap } from "@/components/ui/location-map";
+import { InstagramWall } from "@/components/sections/instagram-wall";
 import { FinalCta } from "@/components/sections/final-cta";
 import { siteConfig } from "@/lib/site-config";
 
@@ -30,6 +31,7 @@ export default function FaqPage() {
 
       <Faq />
       <LocationMap />
+      <InstagramWall />
       <FinalCta />
     </main>
   );

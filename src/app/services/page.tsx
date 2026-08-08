@@ -4,6 +4,7 @@ import { Services } from "@/components/sections/services";
 import { TurnkeyProcess } from "@/components/sections/turnkey-process";
 import { MaterialMoment } from "@/components/sections/material-moment";
 import { AdLiving } from "@/components/sections/ad-living";
+import { InstagramWall } from "@/components/sections/instagram-wall";
 import { FinalCta } from "@/components/sections/final-cta";
 import { siteConfig } from "@/lib/site-config";
 
@@ -34,6 +35,7 @@ export default function ServicesPage() {
       <TurnkeyProcess />
       <MaterialMoment />
       <AdLiving />
+      <InstagramWall />
       <FinalCta />
     </main>
   );

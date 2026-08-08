@@ -9,6 +9,8 @@ import { Footer } from "@/components/layout/footer";
 import { CustomCursor } from "@/components/cursor/custom-cursor";
 import { LoaderProvider, bootScript } from "@/components/loader/loader";
 import { FloatingContact } from "@/components/ui/floating-contact";
+import { ContactModal } from "@/components/ui/contact-modal";
+
 
 const cormorant = Cormorant_Garamond({
   variable: "--font-cormorant",
@@ -74,7 +76,9 @@ export default function RootLayout({ children }: LayoutProps<"/">) {
               {children}
               <Footer />
               <FloatingContact />
+              <ContactModal />
             </SmoothScrollProvider>
+
           </LoaderProvider>
         </ThemeProvider>
       </body>

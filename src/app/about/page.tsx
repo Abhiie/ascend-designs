@@ -5,6 +5,7 @@ import { Philosophy } from "@/components/sections/philosophy";
 import { WhyAscend } from "@/components/sections/why-ascend";
 import { TurnkeyProcess } from "@/components/sections/turnkey-process";
 import { LocationMap } from "@/components/ui/location-map";
+import { InstagramWall } from "@/components/sections/instagram-wall";
 import { FinalCta } from "@/components/sections/final-cta";
 import { siteConfig } from "@/lib/site-config";
 
@@ -46,6 +47,9 @@ export default function AboutPage() {
 
       {/* Location */}
       <LocationMap />
+
+      {/* Instagram Wall */}
+      <InstagramWall />
 
       {/* Final CTA */}
       <FinalCta />
