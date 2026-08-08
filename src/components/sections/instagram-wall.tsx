@@ -1,120 +1,134 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import Image from "next/image";
 import { Reveal } from "@/components/motion/reveal";
-import { ImageReveal } from "@/components/motion/image-reveal";
-import { ProjectImage } from "@/components/ui/project-image";
-import { stockImages } from "@/lib/stock-images";
 import { siteConfig } from "@/lib/site-config";
 import { InstagramGlyph } from "@/components/ui/icons";
+import { stockImages } from "@/lib/stock-images";
 
-export interface InstagramPost {
+export interface InstagramPostItem {
   id: string;
   caption: string;
   category: "Architecture" | "Interiors" | "AD Living" | "Materials";
   image: string;
-  tone: 0 | 1 | 2 | 3;
   likes: number;
   comments: number;
   date: string;
+  permalink: string;
   featured?: boolean;
 }
 
-const POSTS: InstagramPost[] = [
+export const INITIAL_INSTAGRAM_POSTS: InstagramPostItem[] = [
   {
-    id: "post-1",
+    id: "insta-1",
     category: "Interiors",
     caption: "Living room sanctuary at Residence 01 — double-height volume framed in textured limestone.",
     image: stockImages.interiors,
-    tone: 1,
     likes: 412,
     comments: 28,
     date: "2 DAYS AGO",
+    permalink: "https://www.instagram.com/ascend_designs/",
     featured: true,
   },
   {
-    id: "post-2",
+    id: "insta-2",
     category: "Architecture",
     caption: "Facade study in progress — brutalist geometry meets warm timber screening on SG Highway.",
     image: stockImages.architecture,
-    tone: 3,
     likes: 389,
     comments: 19,
     date: "4 DAYS AGO",
+    permalink: "https://www.instagram.com/ascend_designs/",
   },
   {
-    id: "post-3",
+    id: "insta-3",
     category: "AD Living",
     caption: "Oak joinery hand-finished in our AD Living workshop for The Oakline Residence.",
     image: stockImages.adLivingJoinery,
-    tone: 0,
     likes: 295,
     comments: 14,
     date: "1 WEEK AGO",
+    permalink: "https://www.instagram.com/ascend_designs/",
   },
   {
-    id: "post-4",
+    id: "insta-4",
     category: "Materials",
     caption: "Travertine and morning light — selecting stone slabs at the quarry site.",
     image: stockImages.materialTravertine,
-    tone: 2,
     likes: 512,
     comments: 42,
     date: "1 WEEK AGO",
+    permalink: "https://www.instagram.com/ascend_designs/",
   },
   {
-    id: "post-5",
+    id: "insta-5",
     category: "Materials",
     caption: "Linen, wool, and warm neutral textiles curated for penthouse master suite.",
     image: stockImages.materialLinen,
-    tone: 2,
     likes: 230,
     comments: 11,
     date: "2 WEEKS AGO",
+    permalink: "https://www.instagram.com/ascend_designs/",
   },
   {
-    id: "post-6",
+    id: "insta-6",
     category: "AD Living",
     caption: "Detail study — brushed brass inlay seamlessly fitted into honed black granite.",
     image: stockImages.adLivingDecor,
-    tone: 0,
     likes: 367,
     comments: 22,
     date: "2 WEEKS AGO",
+    permalink: "https://www.instagram.com/ascend_designs/",
   },
   {
-    id: "post-7",
+    id: "insta-7",
     category: "Materials",
     caption: "Hand-troweled lime plaster wall reflecting soft afternoon sunlight.",
     image: stockImages.materialPlaster,
-    tone: 3,
     likes: 440,
     comments: 31,
     date: "3 WEEKS AGO",
+    permalink: "https://www.instagram.com/ascend_designs/",
   },
   {
-    id: "post-8",
+    id: "insta-8",
     category: "AD Living",
     caption: "Custom woven textiles and leather details for bespoke lounge seating.",
     image: stockImages.adLivingTextile,
-    tone: 1,
     likes: 278,
     comments: 16,
     date: "3 WEEKS AGO",
+    permalink: "https://www.instagram.com/ascend_designs/",
   },
 ];
 
 export function InstagramWall() {
+  const [posts, setPosts] = useState<InstagramPostItem[]>(INITIAL_INSTAGRAM_POSTS);
   const [activeCategory, setActiveCategory] = useState<string>("All");
-  const [selectedPost, setSelectedPost] = useState<InstagramPost | null>(null);
+  const [selectedPost, setSelectedPost] = useState<InstagramPostItem | null>(null);
 
   const categories = ["All", "Architecture", "Interiors", "AD Living", "Materials"];
 
+  useEffect(() => {
+    async function loadInstagramFeed() {
+      try {
+        const res = await fetch("/api/instagram");
+        const data = await res.json();
+        if (data.posts && Array.isArray(data.posts) && data.posts.length > 0) {
+          setPosts(data.posts);
+        }
+      } catch (err) {
+        console.warn("Instagram API live fetch warning, using pre-rendered feed:", err);
+      }
+    }
+    loadInstagramFeed();
+  }, []);
+
   const filteredPosts =
     activeCategory === "All"
-      ? POSTS
-      : POSTS.filter((post) => post.category === activeCategory);
+      ? posts
+      : posts.filter((post) => post.category === activeCategory);
 
   return (
     <section
@@ -122,14 +136,14 @@ export function InstagramWall() {
       className="border-t border-line bg-surface px-5 py-24 sm:px-8 sm:py-32 lg:px-12 lg:py-36"
     >
       <div className="mx-auto max-w-[1600px]">
-        {/* Header & Instagram Profile Info */}
+        {/* Header & Live Profile Badge */}
         <Reveal>
           <div className="flex flex-col lg:flex-row lg:items-end lg:justify-between gap-8 mb-12">
             <div>
               <div className="flex items-center gap-3 mb-4">
                 <span className="h-2 w-2 rounded-full bg-gold animate-ping" />
                 <p className="label text-gold text-xs tracking-widest uppercase">
-                  Live Studio Feed
+                  Instagram Feed (@ascend_designs)
                 </p>
               </div>
               <h2 className="font-display text-[clamp(2.5rem,5vw,4.5rem)] leading-[1.05] text-ink">
@@ -207,25 +221,23 @@ export function InstagramWall() {
               <div
                 onClick={() => setSelectedPost(post)}
                 className={`group relative block cursor-pointer overflow-hidden border border-line bg-surface-muted transition-all duration-500 hover:border-gold hover:shadow-xl ${
-                  post.featured && activeCategory === "All" ? "sm:col-span-2 sm:row-span-2" : ""
+                  post.featured && activeCategory === "All" ? "sm:col-span-2 sm:row-span-2 min-h-[420px]" : "min-h-[300px] sm:min-h-[340px]"
                 }`}
               >
-                <ImageReveal className="h-full min-h-[300px] sm:min-h-[340px] w-full overflow-hidden">
-                  <div className="h-full w-full transition-transform duration-700 ease-out group-hover:scale-105">
-                    <ProjectImage
-                      label={post.caption}
-                      tone={post.tone}
-                      src={post.image}
-                      sizes="(min-width: 1024px) 25vw, (min-width: 640px) 50vw, 100vw"
-                      className="h-full w-full object-cover"
-                    />
-                  </div>
-                </ImageReveal>
+                <div className="relative h-full w-full min-h-[300px] overflow-hidden">
+                  <Image
+                    src={post.image}
+                    alt={post.caption}
+                    fill
+                    sizes="(min-width: 1024px) 25vw, (min-width: 640px) 50vw, 100vw"
+                    className="object-cover transition-transform duration-700 ease-out group-hover:scale-110"
+                  />
+                </div>
 
                 {/* Hover Scrim Overlay */}
-                <div className="absolute inset-0 flex flex-col justify-between p-6 bg-gradient-to-t from-black/85 via-black/40 to-transparent opacity-0 transition-opacity duration-400 ease-out group-hover:opacity-100">
+                <div className="absolute inset-0 flex flex-col justify-between p-6 bg-gradient-to-t from-black/90 via-black/40 to-transparent opacity-0 transition-opacity duration-400 ease-out group-hover:opacity-100">
                   <div className="flex items-center justify-between">
-                    <span className="label text-[10px] text-gold bg-black/60 px-2.5 py-1 border border-gold/40">
+                    <span className="label text-[10px] text-gold bg-black/70 px-2.5 py-1 border border-gold/40">
                       {post.category}
                     </span>
                     <InstagramGlyph className="h-5 w-5 text-white" />
@@ -257,7 +269,7 @@ export function InstagramWall() {
               className="label inline-flex items-center gap-3 border border-line-strong px-6 py-3.5 text-ink hover:border-gold hover:text-gold transition-colors text-xs tracking-wider"
             >
               <InstagramGlyph className="h-4 w-4" />
-              Explore All Studio Works On Instagram ({siteConfig.instagramHandle}) <span aria-hidden>↗</span>
+              Follow @ascend_designs On Instagram <span aria-hidden>↗</span>
             </a>
           </div>
         </Reveal>
@@ -282,11 +294,11 @@ export function InstagramWall() {
             </button>
 
             <div className="relative aspect-video w-full overflow-hidden border border-line mb-6">
-              <ProjectImage
-                label={selectedPost.caption}
-                tone={selectedPost.tone}
+              <Image
                 src={selectedPost.image}
-                className="h-full w-full object-cover"
+                alt={selectedPost.caption}
+                fill
+                className="object-cover"
               />
             </div>
 
@@ -306,12 +318,12 @@ export function InstagramWall() {
               </div>
 
               <a
-                href={siteConfig.instagramHref}
+                href={selectedPost.permalink || siteConfig.instagramHref}
                 target="_blank"
                 rel="noreferrer"
                 className="label text-xs text-gold hover:underline flex items-center gap-1"
               >
-                View on Instagram <span aria-hidden>↗</span>
+                View Live Post on Instagram <span aria-hidden>↗</span>
               </a>
             </div>
           </div>
