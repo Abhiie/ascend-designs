@@ -1,8 +1,9 @@
-import { Hero } from "@/components/sections/hero";
+import { HeroSwitch } from "@/components/sections/hero-switch";
 import { StudioIntro } from "@/components/sections/studio-intro";
 import { ArchitectSpotlight } from "@/components/sections/architect-spotlight";
 import { FeaturedProject } from "@/components/sections/featured-project";
 import { Portfolio } from "@/components/sections/portfolio";
+import { Stats } from "@/components/sections/stats";
 import { Services } from "@/components/sections/services";
 import { Testimonials } from "@/components/sections/testimonials";
 import { Faq } from "@/components/sections/faq";
@@ -13,8 +14,9 @@ import { FinalCta } from "@/components/sections/final-cta";
 export default function Home() {
   return (
     <main className="flex-1">
-      <Hero />
+      <HeroSwitch />
       <StudioIntro />
+      <Stats />
       <ArchitectSpotlight />
       <FeaturedProject />
       <Portfolio />

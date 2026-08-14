@@ -1,5 +1,15 @@
 @import "tailwindcss";
 
+/*
+ * Two designs share one component tree. `data-design` on <html> swaps the
+ * palette and the display face; only the hero differs structurally. Authoring
+ * every section twice would double the cost of every future edit, so the
+ * variant lives here rather than in the components.
+ *
+ * Selector order matters: [data-theme] and [data-design] carry equal
+ * specificity (0,1,0), so the design block must come after the theme block,
+ * and the combined [data-design][data-theme] selector (0,2,0) wins over both.
+ */
 :root {
   --surface: #f5f2ec;
   --surface-alt: #ece7de;
@@ -14,6 +24,12 @@
   --surface-invert: #f1eee7;
   --line: rgba(23, 17, 12, 0.12);
   --line-strong: rgba(23, 17, 12, 0.22);
+
+  /* Indirection so the display face can be swapped per design. The utility
+     `font-display` resolves to this, not to the Cormorant variable directly. */
+  --font-display-family: var(--font-cormorant), Georgia, serif;
+  --display-tracking: -0.01em;
+  --display-transform: none;
 }
 
 [data-theme="dark"] {
@@ -32,6 +48,60 @@
   --line-strong: rgba(241, 238, 231, 0.22);
 }
 
+/* ── Editorial ──────────────────────────────────────────────────────────
+   Near-white ground, near-black ink, a desaturated stone accent in place of
+   gold, and the sans face carrying the headings at tight tracking. */
+[data-design="editorial"] {
+  --surface: #ffffff;
+  --surface-alt: #f4f3f1;
+  --surface-strong: #fbfaf9;
+  --ink: #101010;
+  --ink-soft: #56534e;
+  --ink-faint: #8c8984;
+  --accent-gold: #7a736a;
+  --accent-wood: #6d665c;
+  --accent-stone: #cdc9c2;
+  --ink-invert: #101010;
+  --surface-invert: #ffffff;
+  --line: rgba(16, 16, 16, 0.1);
+  --line-strong: rgba(16, 16, 16, 0.18);
+
+  --font-display-family: var(--font-manrope), system-ui, sans-serif;
+  --display-tracking: -0.035em;
+  --display-transform: none;
+}
+
+[data-design="editorial"][data-theme="dark"] {
+  --surface: #0c0c0c;
+  --surface-alt: #151515;
+  --surface-strong: #121212;
+  --ink: #f2f1ef;
+  --ink-soft: #b9b5af;
+  --ink-faint: #8f8b85;
+  --accent-gold: #b3aca1;
+  --accent-wood: #8b8377;
+  --accent-stone: #5a564f;
+  --ink-invert: #f2f1ef;
+  --surface-invert: #101010;
+  --line: rgba(242, 241, 239, 0.1);
+  --line-strong: rgba(242, 241, 239, 0.2);
+}
+
+/* The serif carries its own weight; the sans needs pulling in and lightening
+   to read as a display face at these sizes. */
+[data-design="editorial"] .font-display,
+[data-design="editorial"] h1,
+[data-design="editorial"] h2,
+[data-design="editorial"] h3 {
+  letter-spacing: var(--display-tracking);
+  font-weight: 500;
+}
+
+[data-design="editorial"] .font-display.italic,
+[data-design="editorial"] h2.italic {
+  font-style: normal;
+}
+
 @theme inline {
   --color-surface: var(--surface);
   --color-surface-alt: var(--surface-alt);
@@ -46,7 +116,7 @@
   --color-surface-invert: var(--surface-invert);
   --color-line: var(--line);
   --color-line-strong: var(--line-strong);
-  --font-display: var(--font-cormorant);
+  --font-display: var(--font-display-family);
   --font-sans: var(--font-manrope);
 }
 

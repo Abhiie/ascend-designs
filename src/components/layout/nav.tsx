@@ -6,18 +6,22 @@ import { usePathname } from "next/navigation";
 import { useEffect, useState } from "react";
 import { navLinks, siteConfig } from "@/lib/site-config";
 import { useTheme } from "@/components/providers/theme-provider";
+import { useDesign } from "@/components/providers/design-provider";
 import { ThemeSwitch } from "@/components/ui/theme-switch";
+import { DesignSwitch } from "@/components/ui/design-switch";
 
 export function Nav() {
   const [scrolled, setScrolled] = useState(false);
   const [menuOpen, setMenuOpen] = useState(false);
   const pathname = usePathname();
   const { theme } = useTheme();
+  const { design } = useDesign();
 
   const isHomePage = pathname === "/";
   // At the top of the Home page the bar floats over the dark hero photograph.
-  // On inner pages or when scrolled/open, it uses the standard surface palette.
-  const onDark = isHomePage && !scrolled && !menuOpen;
+  // The editorial hero has no photograph behind it, so light-on-dark would put
+  // white text on a white ground — it only applies to the classic design.
+  const onDark = isHomePage && design === "classic" && !scrolled && !menuOpen;
 
   useEffect(() => {
     let ticking = false;
@@ -45,8 +49,8 @@ export function Nav() {
       className="fixed inset-x-0 top-0 z-50 border-b transition-[padding,background-color] duration-500"
       style={{
         borderColor: onDark ? "rgba(255,255,255,0.14)" : "var(--line)",
-        backgroundColor: scrolled || !isHomePage ? "var(--surface)" : "transparent",
-        backdropFilter: scrolled || !isHomePage ? "blur(8px)" : "none",
+        backgroundColor: onDark ? "transparent" : "var(--surface)",
+        backdropFilter: onDark ? "none" : "blur(8px)",
       }}
     >
       <div
@@ -88,7 +92,8 @@ export function Nav() {
           })}
         </nav>
 
-        <div className="hidden items-center gap-8 lg:flex">
+        <div className="hidden items-center gap-6 lg:flex">
+          <DesignSwitch tone={onDark ? "light" : "default"} />
           <ThemeSwitch tone={onDark ? "light" : "default"} />
           <Link
             href="/contact"
@@ -143,11 +148,14 @@ export function Nav() {
             );
           })}
         </nav>
-        <div className="flex items-center justify-between">
-          <ThemeSwitch />
-          <a href={siteConfig.phoneHref} className="label text-ink-soft">
-            {siteConfig.phone}
-          </a>
+        <div className="flex flex-col gap-6">
+          <DesignSwitch />
+          <div className="flex items-center justify-between">
+            <ThemeSwitch />
+            <a href={siteConfig.phoneHref} className="label text-ink-soft">
+              {siteConfig.phone}
+            </a>
+          </div>
         </div>
       </div>
     </header>

@@ -3,6 +3,7 @@ import Script from "next/script";
 import { Cormorant_Garamond, Manrope } from "next/font/google";
 import "./globals.css";
 import { ThemeProvider, themeInitScript } from "@/components/providers/theme-provider";
+import { DesignProvider, designInitScript } from "@/components/providers/design-provider";
 import { SmoothScrollProvider } from "@/components/providers/smooth-scroll-provider";
 import { Nav } from "@/components/layout/nav";
 import { Footer } from "@/components/layout/footer";
@@ -56,6 +57,13 @@ export default function RootLayout({ children }: LayoutProps<"/">) {
           strategy="beforeInteractive"
           dangerouslySetInnerHTML={{ __html: themeInitScript }}
         />
+        {/* Same reasoning as the theme: the design swaps the display face as
+            well as the palette, so a late swap reflows the whole page. */}
+        <Script
+          id="ascend-design-init"
+          strategy="beforeInteractive"
+          dangerouslySetInnerHTML={{ __html: designInitScript }}
+        />
         {/* Pins to the top and locks scroll before the first paint — the
             loader's effect only runs after hydration, by which point the
             restored scroll offset and the scrollbar have already shown. */}
@@ -65,21 +73,22 @@ export default function RootLayout({ children }: LayoutProps<"/">) {
           dangerouslySetInnerHTML={{ __html: bootScript }}
         />
         <ThemeProvider>
-          {/* LoaderProvider sits above the smooth-scroll and cursor layers so
-              both can stay dormant until the intro is done — neither has any
-              job while the doors are closed, and their per-frame work is what
-              made the intro stutter. */}
-          <LoaderProvider>
-            <SmoothScrollProvider>
-              <CustomCursor />
-              <Nav />
-              {children}
-              <Footer />
-              <FloatingContact />
-              <ContactModal />
-            </SmoothScrollProvider>
-
-          </LoaderProvider>
+          <DesignProvider>
+            {/* LoaderProvider sits above the smooth-scroll and cursor layers so
+                both can stay dormant until the intro is done — neither has any
+                job while the doors are closed, and their per-frame work is what
+                made the intro stutter. */}
+            <LoaderProvider>
+              <SmoothScrollProvider>
+                <CustomCursor />
+                <Nav />
+                {children}
+                <Footer />
+                <FloatingContact />
+                <ContactModal />
+              </SmoothScrollProvider>
+            </LoaderProvider>
+          </DesignProvider>
         </ThemeProvider>
       </body>
     </html>

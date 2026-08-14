@@ -1,176 +1,124 @@
-export type ProjectCategory =
-  | "architecture"
-  | "interiors"
-  | "residential"
-  | "commercial"
-  | "turnkey";
+import { projectImages, type ProjectImage } from "./project-images";
 
-export type ProjectLayout = "horizontal" | "portrait" | "full" | "compact";
+export type ProjectCategory = "residential" | "commercial";
 
 export interface Project {
+  /** Slug — also the folder name under public/projects and the anchor id. */
   id: string;
   title: string;
   location: string;
   category: ProjectCategory;
-  year: number;
+  /** Only set where the source photography actually evidences it. */
+  year?: number;
   description: string;
-  /** Alt text / placeholder caption for the cover image. */
-  coverImage: string;
-  /** Selects the placeholder's warm gradient tone (0–3), used when `image` is unset. */
-  tone: 0 | 1 | 2 | 3;
-  /** Real photo URL — omit to fall back to the gradient placeholder. */
-  image?: string;
-  gallery: string[];
-  featured: boolean;
   services: string[];
-  /** Layout hint for the portfolio grid rhythm. */
-  layout: ProjectLayout;
+  featured: boolean;
+  images: ProjectImage[];
 }
 
-export const projects: Project[] = [
+/**
+ * The studio's real work, one entry per folder in the supplied drive export.
+ *
+ * TITLES, CATEGORIES AND COPY NEED CONFIRMING. The folders were named
+ * informally ("tapan bhai Ahmadava", "DR.Prakash bhai"), so titles here are a
+ * best reading of them and descriptions are deliberately generic — nothing
+ * claims a square footage, a completion date or a scope that the images don't
+ * actually evidence. Only Bhemat Jewellers carries a year, because its source
+ * filenames were datestamped. Correct these before launch.
+ */
+const META: Omit<Project, "images">[] = [
   {
-    id: "residence-01",
-    title: "Residence 01",
+    id: "tapan-residence",
+    title: "Tapan Residence",
     location: "Ahmedabad, Gujarat",
     category: "residential",
-    year: 2026,
     description:
-      "An exploration of warmth, proportion and natural material for a family home built around light.",
-    coverImage: "Residence 01 — living room in marble and wood",
-    tone: 0,
-    image:
-      "https://images.unsplash.com/photo-1758565811033-84d1365000c6?q=80&w=1800&auto=format&fit=crop",
-    gallery: [
-      "Residence 01 — living pavilion",
-      "Residence 01 — dining alcove",
-      "Residence 01 — courtyard light",
-    ],
-    featured: true,
+      "A family home worked through room by room, from the living areas to the private floors above.",
     services: ["Interior Design", "Turnkey Projects"],
-    layout: "horizontal",
+    featured: true,
   },
   {
-    id: "oakline-residence",
-    title: "The Oakline Residence",
+    id: "rajdhani-residence",
+    title: "Rajdhani Residence",
     location: "Ahmedabad, Gujarat",
-    category: "interiors",
-    year: 2025,
+    category: "residential",
     description:
-      "A material palette of oak and linen, arranged around a family's everyday rituals.",
-    coverImage: "Oakline Residence — bedroom in oak and linen",
-    tone: 1,
-    image:
-      "https://images.unsplash.com/photo-1764760764956-fcb78be107a5?q=80&w=1800&auto=format&fit=crop",
-    gallery: ["Oakline Residence — bedroom", "Oakline Residence — study"],
+      "A full residential scheme developed across multiple levels, resolved in warm timber and stone.",
+    services: ["Interior Design", "Turnkey Projects"],
     featured: false,
-    services: ["Interior Design"],
-    layout: "portrait",
   },
   {
-    id: "meridian-business-park",
-    title: "Meridian Business Park",
+    id: "shreenathji-ashiyana",
+    title: "Shreenathji Ashiyana",
+    location: "Ahmedabad, Gujarat",
+    category: "residential",
+    description:
+      "Interiors for a family residence, balancing formal reception spaces against quieter private rooms.",
+    services: ["Interior Design"],
+    featured: false,
+  },
+  {
+    id: "alayam-madhuvan",
+    title: "Alayam Madhuvan",
+    location: "Ahmedabad, Gujarat",
+    category: "residential",
+    description:
+      "A residential interior built on a restrained palette and carefully placed natural light.",
+    services: ["Interior Design"],
+    featured: false,
+  },
+  {
+    id: "krushnam-gruham-07",
+    title: "Krushnam Gruham 07",
+    location: "Ahmedabad, Gujarat",
+    category: "residential",
+    description:
+      "A home designed around its central living volume, with joinery detailed to suit the family's routine.",
+    services: ["Interior Design", "Turnkey Projects"],
+    featured: false,
+  },
+  {
+    id: "pahal-83-unit-11",
+    title: "Pahal 83 — Unit 11",
+    location: "Ahmedabad, Gujarat",
+    category: "residential",
+    description:
+      "An apartment interior planned for compact living without giving up on generosity or light.",
+    services: ["Interior Design"],
+    featured: false,
+  },
+  {
+    id: "dr-prakash-residence",
+    title: "Dr. Prakash Residence",
+    location: "Ahmedabad, Gujarat",
+    category: "residential",
+    description:
+      "A private residence developed from architectural layout through to interior finish.",
+    services: ["Architectural Design", "Interior Design"],
+    featured: false,
+  },
+  {
+    id: "bhemat-jewellers",
+    title: "Bhemat Jewellers",
     location: "Ahmedabad, Gujarat",
     category: "commercial",
-    year: 2025,
+    year: 2022,
     description:
-      "A workplace envelope designed around daylight, proportion and material honesty.",
-    coverImage: "Meridian Business Park — lobby facade in stone and glass",
-    tone: 2,
-    image:
-      "https://images.unsplash.com/photo-1758448500688-3ababa93fd67?q=80&w=1800&auto=format&fit=crop",
-    gallery: ["Meridian Business Park — lobby", "Meridian Business Park — atrium"],
+      "A retail interior for a jewellery showroom, built around display, lighting and the customer's route through the store.",
+    services: ["Interior Design", "Turnkey Projects"],
     featured: false,
-    services: ["Architectural Design", "Project Management"],
-    layout: "full",
-  },
-  {
-    id: "villa-amara",
-    title: "Villa Amara",
-    location: "Gandhinagar, Gujarat",
-    category: "architecture",
-    year: 2024,
-    description: "A concrete and stone villa organised around a central courtyard.",
-    coverImage: "Villa Amara — courtyard facade",
-    tone: 3,
-    image:
-      "https://images.unsplash.com/photo-1715523609055-fad02a8651da?q=80&w=1800&auto=format&fit=crop",
-    gallery: ["Villa Amara — courtyard", "Villa Amara — facade"],
-    featured: false,
-    services: ["Architectural Design"],
-    layout: "compact",
-  },
-  {
-    id: "studio-loft-12",
-    title: "Studio Loft 12",
-    location: "Ahmedabad, Gujarat",
-    category: "interiors",
-    year: 2024,
-    description: "A compact live-work loft finished in warm plaster and brushed metal.",
-    coverImage: "Studio Loft 12 — living corner in plaster and metal",
-    tone: 0,
-    image:
-      "https://images.unsplash.com/photo-1505873242700-f289a29e1e0f?q=80&w=1800&auto=format&fit=crop",
-    gallery: ["Studio Loft 12 — living corner", "Studio Loft 12 — kitchen"],
-    featured: false,
-    services: ["Interior Design", "AD Living"],
-    layout: "compact",
-  },
-  {
-    id: "ridgeline-villa",
-    title: "The Ridgeline Villa",
-    location: "Ahmedabad, Gujarat",
-    category: "turnkey",
-    year: 2023,
-    description:
-      "Full turnkey execution from architectural shell to final furnishing and decor.",
-    coverImage: "Ridgeline Villa — terrace in natural stone",
-    tone: 1,
-    image:
-      "https://images.unsplash.com/photo-1783932944218-df55066daead?q=80&w=1800&auto=format&fit=crop",
-    gallery: ["Ridgeline Villa — terrace", "Ridgeline Villa — living room"],
-    featured: false,
-    services: ["Turnkey Projects", "AD Living"],
-    layout: "compact",
-  },
-  {
-    id: "court-house-9",
-    title: "Court House 9",
-    location: "Ahmedabad, Gujarat",
-    category: "architecture",
-    year: 2023,
-    description: "A quiet courtyard house designed around cross-ventilation and shadow.",
-    coverImage: "Court House 9 — internal courtyard",
-    tone: 2,
-    image:
-      "https://images.unsplash.com/photo-1612476082186-7a5e4fa1e8d0?q=80&w=1800&auto=format&fit=crop",
-    gallery: ["Court House 9 — courtyard", "Court House 9 — verandah"],
-    featured: false,
-    services: ["Architectural Design"],
-    layout: "horizontal",
-  },
-  {
-    id: "linen-oak-apartment",
-    title: "Linen & Oak Apartment",
-    location: "Ahmedabad, Gujarat",
-    category: "residential",
-    year: 2023,
-    description: "A restrained material palette for a compact family apartment.",
-    coverImage: "Linen & Oak Apartment — kitchen",
-    tone: 3,
-    image:
-      "https://images.unsplash.com/photo-1617228069096-4638a7ffc906?q=80&w=1800&auto=format&fit=crop",
-    gallery: ["Linen & Oak Apartment — kitchen", "Linen & Oak Apartment — bedroom"],
-    featured: false,
-    services: ["Interior Design"],
-    layout: "portrait",
   },
 ];
+
+export const projects: Project[] = META.map((meta) => ({
+  ...meta,
+  images: projectImages[meta.id] ?? [],
+}));
 
 export const filterCategories: { label: string; value: ProjectCategory | "all" }[] = [
   { label: "All", value: "all" },
-  { label: "Architecture", value: "architecture" },
-  { label: "Interiors", value: "interiors" },
   { label: "Residential", value: "residential" },
   { label: "Commercial", value: "commercial" },
-  { label: "Turnkey", value: "turnkey" },
 ];
+
+export type { ProjectImage };

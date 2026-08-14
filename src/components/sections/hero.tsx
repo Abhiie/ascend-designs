@@ -26,19 +26,6 @@ const TICKER_ITEMS = [
 const ANIMATED_SELECTOR =
   "[data-hero-frame], [data-hero-watermark], [data-hero-label], [data-hero-line], [data-hero-rule], [data-hero-sub], [data-hero-cta], [data-hero-scroll], [data-hero-ticker]";
 
-/** One ornamental ring, as used either side of the eyebrow. */
-function Ring({ className = "" }: { className?: string }) {
-  return (
-    <span
-      aria-hidden
-      className={`relative h-5 w-5 items-center justify-center ${className || "flex"}`}
-    >
-      <span className="absolute inset-0 rounded-full border border-gold/60" />
-      <span className="h-1 w-1 rounded-full bg-gold" />
-    </span>
-  );
-}
-
 export function Hero() {
   const rootRef = useRef<HTMLDivElement>(null);
   const isReady = useIsReady();
@@ -156,19 +143,18 @@ export function Hero() {
 
       {/* Content */}
       <div className="relative z-10 flex flex-1 flex-col items-center justify-center px-5 pt-28 pb-8 text-center sm:px-8 sm:pt-32 sm:pb-10 lg:px-12">
-        {/* Rings and rules drop away below `sm` — at full tracking the eyebrow
-            plus its ornaments runs ~390px, wider than a 360px phone. */}
+        {/* Location-led, unornamented — both reference studios open on where
+            they practise rather than on decoration. The rule drops away below
+            `sm`, where the line alone already fills the width. */}
         <div
           data-hero-label
-          className="mb-6 flex items-center justify-center gap-3 sm:mb-8 sm:gap-5"
+          className="mb-6 flex items-center justify-center gap-4 sm:mb-8"
         >
-          <span className="hidden h-px w-10 bg-white/30 sm:block sm:w-16" />
-          <Ring className="hidden sm:flex" />
-          <span className="label text-[0.5625rem] tracking-[0.14em] text-white/85 sm:text-[0.6875rem] sm:tracking-[0.22em]">
-            Architecture · Interiors · Turnkey
+          <span className="hidden h-px w-10 bg-white/30 sm:block sm:w-14" />
+          <span className="label text-[0.5625rem] tracking-[0.18em] text-white/85 sm:text-[0.6875rem] sm:tracking-[0.26em]">
+            Ahmedabad, Gujarat — India
           </span>
-          <Ring className="hidden sm:flex" />
-          <span className="hidden h-px w-10 bg-white/30 sm:block sm:w-16" />
+          <span className="hidden h-px w-10 bg-white/30 sm:block sm:w-14" />
         </div>
 
         {/* The 2.25rem floor keeps "Designing Spaces With" on one line at

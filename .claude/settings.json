@@ -1,0 +1,25 @@
+{
+  "permissions": {
+    "allow": [
+      "WebFetch(domain:mirell.framer.website)",
+      "WebFetch(domain:noksh.framer.website)",
+      "Bash(ls -la \"/c/Users/ASUS/Downloads/ANimate_this.mp4\" 2>&1; echo \"--- size MB ---\"; du -m \"/c/Users/ASUS/Downloads/ANimate_this.mp4\" 2>/dev/null; echo \"--- ffprobe? ---\"; which ffprobe ffmpeg 2>&1 | head -2)",
+      "Read(//c/Users/ASUS/Downloads/**)",
+      "Bash(python -)",
+      "Bash(cd \"d:/Freelance/Ascend Designs\" && cp \"/c/Users/ASUS/Downloads/ANimate_this.mp4\" public/intro.mp4 && ls -la public/intro.mp4)",
+      "Bash(curl -s -o /dev/null -w \"video=%{http_code} type=%{content_type} bytes=%{size_download}\\\\n\" http://localhost:3000/intro.mp4)",
+      "Bash(curl -s http://localhost:3000/)",
+      "Bash(python -c ' *)",
+      "Bash(node \"C:/Users/ASUS/AppData/Local/Temp/claude/d--Freelance-Ascend-Designs/7c75c1e2-73e5-438c-bcf5-8ab2b8bb8ae0/scratchpad/convert.mjs\")",
+      "Bash(rm -f scratch-manifest.json)",
+      "Bash(node -e ' *)",
+      "PowerShell(foreach \\($f in @\\(\"tapan-residence/01.webp\",\"bhemat-jewellers/01.webp\",\"rajdhani-residence/19.webp\",\"pahal-83-unit-11/16.webp\"\\)\\) { try { $r = Invoke-WebRequest -Uri \"http://localhost:3000/projects/$f\" -UseBasicParsing; \"{0} -> {1} {2} {3} bytes\" -f $f, $r.StatusCode, $r.Headers['Content-Type'], $r.RawContentLength } catch { \"$f -> FAILED $\\($_.Exception.Message\\)\" } })",
+      "Bash(printf '\\\\n# Client source photography \\(253 MB of PNG/JPEG originals\\). The web-ready\\\\n# WebP conversions live in public/projects and are committed instead.\\\\n/src/drive-download-*/\\\\n')",
+      "Bash(git check-ignore *)"
+    ],
+    "additionalDirectories": [
+      "C:\\Users\\ASUS\\Downloads",
+      "C:\\Users\\ASUS\\AppData\\Local\\Temp\\claude\\d--Freelance-Ascend-Designs\\7c75c1e2-73e5-438c-bcf5-8ab2b8bb8ae0\\scratchpad"
+    ]
+  }
+}

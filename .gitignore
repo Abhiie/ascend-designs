@@ -39,3 +39,7 @@ yarn-error.log*
 # typescript
 *.tsbuildinfo
 next-env.d.ts
+
+# Client source photography (253 MB of PNG/JPEG originals). The web-ready
+# WebP conversions live in public/projects and are committed instead.
+/src/drive-download-*/
