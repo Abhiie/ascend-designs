@@ -43,7 +43,7 @@ export function RoomWalkthrough() {
 
       // ── Continuous RAF loop: copy video → canvas whenever a new frame arrives
       function renderLoop() {
-        if (video && ctx2d && video.readyState >= 2) {
+        if (video && canvas && ctx2d && video.readyState >= 2) {
           // Only redraw if the timestamp actually changed
           if (video.currentTime !== lastDrawnTime) {
             lastDrawnTime = video.currentTime;
