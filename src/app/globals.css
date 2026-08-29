@@ -1,35 +1,36 @@
 @import "tailwindcss";
 
+/* ─── Dark Luxury Editorial ──────────────────────────────────────────────── */
 :root {
-  --surface: #f5f2ec;
-  --surface-alt: #ece7de;
-  --surface-strong: #faf9f6;
-  --ink: #171717;
-  --ink-soft: #5f5b55;
-  --ink-faint: #858078;
-  --accent-gold: #b08a52;
-  --accent-wood: #8a6446;
-  --accent-stone: #c8bfb0;
-  --ink-invert: #242321;
-  --surface-invert: #f1eee7;
-  --line: rgba(23, 17, 12, 0.12);
-  --line-strong: rgba(23, 17, 12, 0.22);
+  --surface: #0c0b09;
+  --surface-alt: #141210;
+  --surface-strong: #1c1a16;
+  --ink: #f5f0e8;
+  --ink-soft: #b8b0a0;
+  --ink-faint: #7a7468;
+  --accent-gold: #c9a96e;
+  --accent-warm: #a07850;
+  --accent-stone: #3d3830;
+  --ink-invert: #0c0b09;
+  --surface-invert: #1c1a16;
+  --line: rgba(245, 240, 232, 0.08);
+  --line-strong: rgba(245, 240, 232, 0.16);
 }
 
-[data-theme="dark"] {
-  --surface: #11110f;
-  --surface-alt: #181714;
-  --surface-strong: #15140f;
-  --ink: #f1eee7;
-  --ink-soft: #c9c3b8;
-  --ink-faint: #a8a39a;
-  --accent-gold: #b89560;
-  --accent-wood: #76583f;
-  --accent-stone: #625d54;
-  --ink-invert: #f1eee7;
-  --surface-invert: #171717;
-  --line: rgba(241, 238, 231, 0.12);
-  --line-strong: rgba(241, 238, 231, 0.22);
+[data-theme="light"] {
+  --surface: #faf8f4;
+  --surface-alt: #f2ede5;
+  --surface-strong: #ffffff;
+  --ink: #111111;
+  --ink-soft: #5a5550;
+  --ink-faint: #9a9590;
+  --accent-gold: #a07850;
+  --accent-warm: #8a6440;
+  --accent-stone: #d8d0c4;
+  --ink-invert: #f5f0e8;
+  --surface-invert: #0c0b09;
+  --line: rgba(17, 14, 10, 0.1);
+  --line-strong: rgba(17, 14, 10, 0.2);
 }
 
 @theme inline {
@@ -40,14 +41,18 @@
   --color-ink-soft: var(--ink-soft);
   --color-ink-faint: var(--ink-faint);
   --color-gold: var(--accent-gold);
-  --color-wood: var(--accent-wood);
+  --color-warm: var(--accent-warm);
   --color-stone: var(--accent-stone);
   --color-ink-invert: var(--ink-invert);
   --color-surface-invert: var(--surface-invert);
   --color-line: var(--line);
   --color-line-strong: var(--line-strong);
   --font-display: var(--font-cormorant);
-  --font-sans: var(--font-manrope);
+  --font-sans: var(--font-dm-sans);
+}
+
+html {
+  color-scheme: dark;
 }
 
 body {
@@ -74,8 +79,10 @@ button {
 
 ::selection {
   background: var(--accent-gold);
-  color: var(--surface-strong);
+  color: var(--surface);
 }
+
+/* ── Utility Classes ────────────────────────────────────────────────────── */
 
 .label {
   font-family: var(--font-sans), system-ui, sans-serif;
@@ -85,50 +92,73 @@ button {
   font-weight: 600;
 }
 
-/* Hero ticker — the track holds two identical copies of the item list, so
-   sliding it exactly -50% lands the second copy where the first began. */
-@keyframes marquee-x {
-  from {
-    transform: translate3d(0, 0, 0);
-  }
-  to {
-    transform: translate3d(-50%, 0, 0);
-  }
+/* Text mask: wrap each line in .line-mask, put text in .line-inner.
+   GSAP animates yPercent on .line-inner so the text rises from behind
+   its parent's overflow:hidden edge. */
+.line-mask {
+  display: block;
+  overflow: hidden;
+  padding-bottom: 0.08em;
 }
 
+/* ── Marquee ────────────────────────────────────────────────────────────── */
+@keyframes marquee-x {
+  from { transform: translate3d(0, 0, 0); }
+  to   { transform: translate3d(-50%, 0, 0); }
+}
 .marquee-track {
   display: flex;
   width: max-content;
-  animation: marquee-x 42s linear infinite;
+  animation: marquee-x 50s linear infinite;
 }
 
+/* ── Scroll cue ─────────────────────────────────────────────────────────── */
 @keyframes scroll-cue {
-  0% {
-    opacity: 0;
-    transform: translateY(-3px);
-  }
-  30% {
-    opacity: 1;
-  }
-  100% {
-    opacity: 0;
-    transform: translateY(9px);
-  }
+  0%   { opacity: 0; transform: translateY(-3px); }
+  30%  { opacity: 1; }
+  100% { opacity: 0; transform: translateY(9px); }
 }
-
 .scroll-cue-dot {
-  animation: scroll-cue 1.9s cubic-bezier(0.4, 0, 0.2, 1) infinite;
+  animation: scroll-cue 2s cubic-bezier(0.4, 0, 0.2, 1) infinite;
 }
 
+/* ── Horizontal scroll track ─────────────────────────────────────────────── */
+.h-scroll-track {
+  display: flex;
+  will-change: transform;
+}
+
+/* ── Counter animate ────────────────────────────────────────────────────── */
+@keyframes count-up {
+  from { transform: translateY(100%); opacity: 0; }
+  to   { transform: translateY(0); opacity: 1; }
+}
+
+/* ── Gold shimmer on hover ──────────────────────────────────────────────── */
+@keyframes shimmer {
+  0%   { background-position: -200% 0; }
+  100% { background-position: 200% 0; }
+}
+.btn-shimmer {
+  background: linear-gradient(
+    105deg,
+    var(--accent-gold) 0%,
+    #e8c98a 45%,
+    var(--accent-gold) 55%,
+    var(--accent-warm) 100%
+  );
+  background-size: 200% auto;
+}
+.btn-shimmer:hover {
+  animation: shimmer 1.4s linear;
+}
+
+/* ── Reduced motion ─────────────────────────────────────────────────────── */
 @media (prefers-reduced-motion: reduce) {
-  .marquee-track,
-  .scroll-cue-dot {
+  .marquee-track, .scroll-cue-dot {
     animation: none !important;
   }
-
-  *,
-  *::before,
-  *::after {
+  *, *::before, *::after {
     animation-duration: 0.001ms !important;
     animation-iteration-count: 1 !important;
     transition-duration: 0.001ms !important;
@@ -137,7 +167,5 @@ button {
 }
 
 @media (pointer: coarse) {
-  .cursor-dot {
-    display: none !important;
-  }
+  .cursor-dot { display: none !important; }
 }

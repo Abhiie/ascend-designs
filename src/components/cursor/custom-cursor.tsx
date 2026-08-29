@@ -81,11 +81,11 @@ export function CustomCursor() {
       style={{
         width: isExpanded ? (variant === "view" ? 76 : 56) : 10,
         height: isExpanded ? (variant === "view" ? 76 : 56) : 10,
-        backgroundColor: "#F1EEE7",
+        backgroundColor: "#c9a96e",
       }}
     >
       {label && (
-        <span className="label text-[10px] text-[#171717]">{label}</span>
+        <span className="label text-[10px] text-[#0c0b09]">{label}</span>
       )}
     </div>
   );

@@ -28,7 +28,7 @@ export const themeInitScript = `
     var stored = localStorage.getItem("${STORAGE_KEY}");
     var theme = stored === "light" || stored === "dark"
       ? stored
-      : (window.matchMedia("(prefers-color-scheme: dark)").matches ? "dark" : "light");
+      : "dark";
     document.documentElement.setAttribute("data-theme", theme);
   } catch (e) {}
 })();
@@ -45,7 +45,7 @@ function getSnapshot(): Theme {
 // hydrated, useSyncExternalStore re-reads getSnapshot() and reconciles to
 // the real theme the inline bootstrap script already painted.
 function getServerSnapshot(): Theme {
-  return "light";
+  return "dark";
 }
 
 function subscribe(callback: () => void) {

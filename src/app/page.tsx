@@ -1,28 +1,37 @@
 import { Hero } from "@/components/sections/hero";
+import { PhotoWall } from "@/components/sections/photo-wall";
 import { StudioIntro } from "@/components/sections/studio-intro";
-import { ArchitectSpotlight } from "@/components/sections/architect-spotlight";
 import { FeaturedProject } from "@/components/sections/featured-project";
-import { Portfolio } from "@/components/sections/portfolio";
 import { Services } from "@/components/sections/services";
 import { Testimonials } from "@/components/sections/testimonials";
-import { Faq } from "@/components/sections/faq";
-import { LocationMap } from "@/components/ui/location-map";
 import { InstagramWall } from "@/components/sections/instagram-wall";
 import { FinalCta } from "@/components/sections/final-cta";
 
 export default function Home() {
   return (
     <main className="flex-1">
+      {/* 1. Hero — cinematic intro */}
       <Hero />
+
+      {/* 2. Photo Wall — CLIENT WORK IS THE PRIORITY */}
+      <PhotoWall />
+
+      {/* 3. Brief studio intro — keep it short */}
       <StudioIntro />
-      <ArchitectSpotlight />
+
+      {/* 4. Featured project — one deep-dive */}
       <FeaturedProject />
-      <Portfolio />
+
+      {/* 5. Services — what we do */}
       <Services />
+
+      {/* 6. Client voices */}
       <Testimonials />
-      <Faq limit={4} />
-      <LocationMap />
+
+      {/* 7. Instagram live feed */}
       <InstagramWall />
+
+      {/* 8. CTA */}
       <FinalCta />
     </main>
   );

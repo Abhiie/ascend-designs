@@ -88,7 +88,7 @@ function DoorLeaf({ side }: { side: "left" | "right" }) {
         // re-raster on every frame of the 3D swing, which is not worth it.
         background: `linear-gradient(${
           side === "left" ? "100deg" : "260deg"
-        }, rgba(176,138,82,0.11) 0%, rgba(176,138,82,0) 55%), var(--surface)`,
+        }, rgba(201,169,110,0.08) 0%, rgba(201,169,110,0) 60%), var(--surface)`,
       }}
     >
       {/* Recessed panels. */}
@@ -105,7 +105,7 @@ function DoorLeaf({ side }: { side: "left" | "right" }) {
         }`}
         style={{
           background:
-            "linear-gradient(180deg, rgba(176,138,82,0.2) 0%, var(--accent-gold) 45%, rgba(176,138,82,0.2) 100%)",
+            "linear-gradient(180deg, rgba(201,169,110,0.15) 0%, var(--accent-gold) 45%, rgba(201,169,110,0.15) 100%)",
         }}
       />
 
@@ -347,7 +347,7 @@ function Loader({ onDone, onSettled }: { onDone: () => void; onSettled: () => vo
         className="absolute inset-0 opacity-0"
         style={{
           background:
-            "radial-gradient(ellipse 55% 75% at 50% 50%, rgba(212,175,120,0.55) 0%, rgba(176,138,82,0.22) 40%, transparent 72%)",
+            "radial-gradient(ellipse 55% 75% at 50% 50%, rgba(201,169,110,0.45) 0%, rgba(160,120,80,0.18) 40%, transparent 72%)",
         }}
       />
 
@@ -364,7 +364,7 @@ function Loader({ onDone, onSettled }: { onDone: () => void; onSettled: () => vo
         className="absolute inset-y-0 left-1/2 w-40 -translate-x-1/2 opacity-0"
         style={{
           background:
-            "linear-gradient(90deg, transparent 0%, rgba(240,214,164,0.42) 50%, transparent 100%)",
+            "linear-gradient(90deg, transparent 0%, rgba(201,169,110,0.35) 50%, transparent 100%)",
         }}
       />
       <div
@@ -372,7 +372,7 @@ function Loader({ onDone, onSettled }: { onDone: () => void; onSettled: () => vo
         className="absolute inset-y-0 left-1/2 w-[2px] -translate-x-1/2 opacity-0"
         style={{
           background:
-            "linear-gradient(180deg, transparent 0%, var(--accent-gold) 18%, #f3e2c4 50%, var(--accent-gold) 82%, transparent 100%)",
+            "linear-gradient(180deg, transparent 0%, var(--accent-gold) 18%, #e8c98a 50%, var(--accent-gold) 82%, transparent 100%)",
         }}
       />
 
@@ -407,7 +407,7 @@ function Loader({ onDone, onSettled }: { onDone: () => void; onSettled: () => vo
                 className="pointer-events-none absolute inset-y-0 left-0 w-full opacity-0"
                 style={{
                   background:
-                    "linear-gradient(105deg, transparent 34%, rgba(240,214,164,0.9) 50%, transparent 66%)",
+                    "linear-gradient(105deg, transparent 34%, rgba(201,169,110,0.75) 50%, transparent 66%)",
                 }}
               />
             </div>

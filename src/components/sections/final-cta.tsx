@@ -18,21 +18,36 @@ export function FinalCta() {
           />
         </Parallax>
       </ImageReveal>
-      <div className="absolute inset-0 bg-[#12100c]/60" />
+      {/* Dark cinematic overlay */}
+      <div
+        className="absolute inset-0"
+        style={{
+          background:
+            "linear-gradient(135deg, rgba(12,11,9,0.78) 0%, rgba(12,11,9,0.55) 60%, rgba(12,11,9,0.72) 100%)",
+        }}
+      />
 
-      <div className="relative z-10 px-5 py-32 sm:px-8 sm:py-44 lg:px-12 lg:py-56">
+      <div className="relative z-10 px-6 py-40 sm:px-12 sm:py-52 lg:px-20 lg:py-64">
         <div className="mx-auto max-w-[1600px]">
           <Reveal>
-            <p className="label mb-8 text-[#F1EEE7]/70">Start a Project</p>
-            <h2 className="max-w-3xl font-display text-[clamp(2.75rem,6vw,5.5rem)] leading-[1.03] text-[#F1EEE7]">
-              Let&rsquo;s design something timeless.
+            {/* Label */}
+            <div className="mb-10 flex items-center gap-5">
+              <span className="h-px w-10 bg-gold/50" />
+              <p className="label text-gold/70">Start a Project</p>
+            </div>
+
+            {/* Heading */}
+            <h2 className="max-w-4xl font-display text-[clamp(2.75rem,7vw,6.5rem)] font-light leading-[1.0] text-white">
+              Let&rsquo;s design something{" "}
+              <em className="italic text-gold">timeless.</em>
             </h2>
 
-            <div className="mt-12 flex flex-wrap items-center gap-x-10 gap-y-6">
+            {/* CTAs */}
+            <div className="mt-14 flex flex-wrap items-center gap-x-10 gap-y-6">
               <a
                 href="#contact-details"
                 data-cursor="cta"
-                className="label flex items-center gap-2 border border-[#F1EEE7]/40 px-6 py-3.5 text-[#F1EEE7] transition-colors hover:border-gold hover:text-gold"
+                className="btn-shimmer label inline-flex items-center gap-3 px-8 py-4 text-[#0c0b09] transition-opacity hover:opacity-90"
               >
                 Start a Project <span aria-hidden>→</span>
               </a>
@@ -41,30 +56,31 @@ export function FinalCta() {
                 target="_blank"
                 rel="noopener noreferrer"
                 data-cursor="cta"
-                className="label text-[#F1EEE7]/80 underline underline-offset-4 transition-colors hover:text-gold"
+                className="label text-white/70 underline underline-offset-4 transition-colors hover:text-gold"
               >
                 WhatsApp Us
               </a>
             </div>
           </Reveal>
 
+          {/* Contact details */}
           <Reveal delay={0.15}>
             <div
               id="contact-details"
-              className="mt-20 flex flex-col gap-2 border-t border-[#F1EEE7]/20 pt-10 text-[#F1EEE7]/80 sm:mt-24"
+              className="mt-24 border-t border-white/15 pt-12 sm:mt-28"
             >
-              <p className="font-display text-xl text-[#F1EEE7]">
-                {siteConfig.founder}
-              </p>
-              <p className="label text-[#F1EEE7]/60">Founder</p>
-              <div className="mt-4 flex flex-col gap-1.5 text-sm sm:flex-row sm:gap-6">
-                <a href={siteConfig.phoneHref} className="hover:text-gold">
+              <div className="flex flex-col gap-1 text-white/70">
+                <p className="font-display text-2xl text-white">{siteConfig.founder}</p>
+                <p className="label text-gold/60">Founder &amp; Principal Architect</p>
+              </div>
+              <div className="mt-6 flex flex-col gap-2 text-sm sm:flex-row sm:gap-8">
+                <a href={siteConfig.phoneHref} className="text-white/60 transition-colors hover:text-gold">
                   {siteConfig.phone}
                 </a>
-                <a href={`mailto:${siteConfig.email}`} className="hover:text-gold">
+                <a href={`mailto:${siteConfig.email}`} className="text-white/60 transition-colors hover:text-gold">
                   {siteConfig.email}
                 </a>
-                <span>{siteConfig.location}</span>
+                <span className="text-white/40">{siteConfig.shortLocation}</span>
               </div>
             </div>
           </Reveal>

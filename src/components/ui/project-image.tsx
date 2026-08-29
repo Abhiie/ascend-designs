@@ -1,10 +1,10 @@
 import Image from "next/image";
 
 const GRADIENTS = [
-  "linear-gradient(135deg, #cbb797 0%, #a3805a 45%, #6f5138 100%)",
-  "linear-gradient(135deg, #d9cdb8 0%, #b7a084 50%, #8a6446 100%)",
-  "linear-gradient(160deg, #c8bfb0 0%, #9c8f78 55%, #5f5548 100%)",
-  "linear-gradient(140deg, #e2d7c3 0%, #b08a52 60%, #6b4d30 100%)",
+  "linear-gradient(135deg, #2a2218 0%, #1a150e 55%, #0e0c08 100%)",
+  "linear-gradient(135deg, #1e2018 0%, #161812 55%, #0d0e0a 100%)",
+  "linear-gradient(160deg, #221e1a 0%, #16140f 55%, #0c0b08 100%)",
+  "linear-gradient(140deg, #1c1814 0%, #131008 60%, #0a0805 100%)",
 ];
 
 interface ProjectImageProps {
