@@ -25,9 +25,12 @@ export function LocationMap() {
               href={siteConfig.googleMapsUrl}
               target="_blank"
               rel="noopener noreferrer"
-              className="label inline-flex items-center gap-2 border border-line-strong px-5 py-2.5 text-ink transition-colors hover:border-gold hover:text-gold shrink-0"
+              className="group label inline-flex shrink-0 items-center gap-2 border border-line-strong px-5 py-2.5 text-ink transition-colors hover:border-gold hover:text-gold"
             >
-              Open in Google Maps <span aria-hidden>↗</span>
+              Open in Google Maps{" "}
+              <span aria-hidden className="inline-block transition-transform duration-300 group-hover:translate-x-1 group-hover:-translate-y-1">
+                ↗
+              </span>
             </a>
           </div>
         </Reveal>
@@ -49,59 +52,72 @@ export function LocationMap() {
           </ImageReveal>
 
           {/* Address Details Box */}
-          <Reveal delay={0.1} className="lg:col-span-4 flex flex-col justify-between border border-line p-8 sm:p-10 bg-surface">
+          <div className="lg:col-span-4 flex flex-col justify-between border border-line p-8 sm:p-10 bg-surface">
             <div>
-              <p className="label text-gold mb-4">Ascend Designs Head Office</p>
-              
-              <div className="mb-8">
-                <p className="label text-ink-faint mb-1.5">Full Address</p>
-                <p className="text-base text-ink leading-relaxed font-medium">
-                  {siteConfig.location}
-                </p>
-              </div>
+              <Reveal delay={0.1}>
+                <p className="label text-gold mb-4">Ascend Designs Head Office</p>
+              </Reveal>
 
-              <div className="mb-8 border-t border-line/60 pt-6">
-                <p className="label text-ink-faint mb-1.5">Direct Contact</p>
-                <p className="text-base text-ink mb-1">
-                  Phone:{" "}
-                  <a href={siteConfig.phoneHref} className="text-gold hover:underline">
-                    {siteConfig.phone}
-                  </a>
-                </p>
-                <p className="text-base text-ink">
-                  Email:{" "}
-                  <a href={`mailto:${siteConfig.email}`} className="text-gold hover:underline">
-                    {siteConfig.email}
-                  </a>
-                </p>
-              </div>
+              <Reveal delay={0.16}>
+                <div className="mb-8">
+                  <p className="label text-ink-faint mb-1.5">Full Address</p>
+                  <p className="text-base text-ink leading-relaxed font-medium">
+                    {siteConfig.location}
+                  </p>
+                </div>
+              </Reveal>
 
-              <div className="border-t border-line/60 pt-6">
-                <p className="label text-ink-faint mb-1.5">Studio Hours</p>
-                <p className="text-base text-ink">{siteConfig.hours}</p>
-                <p className="text-xs text-ink-soft mt-1">Sundays by prior appointment only</p>
-              </div>
+              <Reveal delay={0.22}>
+                <div className="mb-8 border-t border-line/60 pt-6">
+                  <p className="label text-ink-faint mb-1.5">Direct Contact</p>
+                  <p className="text-base text-ink mb-1">
+                    Phone:{" "}
+                    <a href={siteConfig.phoneHref} className="text-gold hover:underline">
+                      {siteConfig.phone}
+                    </a>
+                  </p>
+                  <p className="text-base text-ink">
+                    Email:{" "}
+                    <a href={`mailto:${siteConfig.email}`} className="text-gold hover:underline">
+                      {siteConfig.email}
+                    </a>
+                  </p>
+                </div>
+              </Reveal>
+
+              <Reveal delay={0.28}>
+                <div className="border-t border-line/60 pt-6">
+                  <p className="label text-ink-faint mb-1.5">Studio Hours</p>
+                  <p className="text-base text-ink">{siteConfig.hours}</p>
+                  <p className="text-xs text-ink-soft mt-1">Sundays by prior appointment only</p>
+                </div>
+              </Reveal>
             </div>
 
-            <div className="mt-10 border-t border-line pt-6 flex items-center justify-between">
-              <a
-                href={siteConfig.whatsappHref}
-                target="_blank"
-                rel="noopener noreferrer"
-                className="label text-gold flex items-center gap-2 hover:underline"
-              >
-                Chat on WhatsApp <span aria-hidden>→</span>
-              </a>
-              <a
-                href={siteConfig.instagramHref}
-                target="_blank"
-                rel="noopener noreferrer"
-                className="label text-ink-soft hover:text-gold"
-              >
-                {siteConfig.instagramHandle}
-              </a>
-            </div>
-          </Reveal>
+            <Reveal delay={0.34}>
+              <div className="mt-10 border-t border-line pt-6 flex items-center justify-between">
+                <a
+                  href={siteConfig.whatsappHref}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="group label flex items-center gap-2 text-gold hover:underline"
+                >
+                  Chat on WhatsApp{" "}
+                  <span aria-hidden className="transition-transform duration-300 group-hover:translate-x-1">
+                    →
+                  </span>
+                </a>
+                <a
+                  href={siteConfig.instagramHref}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="label text-ink-soft transition-colors hover:text-gold"
+                >
+                  {siteConfig.instagramHandle}
+                </a>
+              </div>
+            </Reveal>
+          </div>
         </div>
       </div>
     </section>

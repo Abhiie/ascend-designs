@@ -47,9 +47,12 @@ export function FinalCta() {
               <a
                 href="#contact-details"
                 data-cursor="cta"
-                className="btn-shimmer label inline-flex items-center gap-3 px-8 py-4 text-[#0c0b09] transition-opacity hover:opacity-90"
+                className="group btn-shimmer label inline-flex items-center gap-3 px-8 py-4 text-[#0c0b09] transition-opacity hover:opacity-90"
               >
-                Start a Project <span aria-hidden>→</span>
+                Start a Project{" "}
+                <span aria-hidden className="transition-transform duration-300 group-hover:translate-x-1">
+                  →
+                </span>
               </a>
               <a
                 href={siteConfig.whatsappHref}
@@ -64,15 +67,17 @@ export function FinalCta() {
           </Reveal>
 
           {/* Contact details */}
-          <Reveal delay={0.15}>
-            <div
-              id="contact-details"
-              className="mt-24 border-t border-white/15 pt-12 sm:mt-28"
-            >
+          <div
+            id="contact-details"
+            className="mt-24 border-t border-white/15 pt-12 sm:mt-28"
+          >
+            <Reveal delay={0.15}>
               <div className="flex flex-col gap-1 text-white/70">
                 <p className="font-display text-2xl text-white">{siteConfig.founder}</p>
                 <p className="label text-gold/60">Founder &amp; Principal Architect</p>
               </div>
+            </Reveal>
+            <Reveal delay={0.22}>
               <div className="mt-6 flex flex-col gap-2 text-sm sm:flex-row sm:gap-8">
                 <a href={siteConfig.phoneHref} className="text-white/60 transition-colors hover:text-gold">
                   {siteConfig.phone}
@@ -82,8 +87,8 @@ export function FinalCta() {
                 </a>
                 <span className="text-white/40">{siteConfig.shortLocation}</span>
               </div>
-            </div>
-          </Reveal>
+            </Reveal>
+          </div>
         </div>
       </div>
     </section>

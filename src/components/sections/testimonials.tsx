@@ -96,7 +96,11 @@ export function Testimonials() {
           >
             {/* Large quote mark */}
             <div className="lg:col-span-1">
-              <span className="font-display text-[6rem] leading-none text-gold/20 select-none">
+              <span
+                key={index}
+                className="block font-display text-[6rem] leading-none text-gold/20 select-none"
+                style={{ animation: "quotePulse 0.6s cubic-bezier(0.16,1,0.3,1) both" }}
+              >
                 &ldquo;
               </span>
             </div>
@@ -106,7 +110,16 @@ export function Testimonials() {
               {/* Stars */}
               <div className="mb-6 flex gap-1 text-gold" aria-label={`${current.rating} stars`}>
                 {Array.from({ length: current.rating }).map((_, i) => (
-                  <span key={i} className="text-sm">★</span>
+                  <span
+                    key={`${index}-${i}`}
+                    className="text-sm"
+                    style={{
+                      animation: "starPop 0.4s cubic-bezier(0.34,1.56,0.64,1) both",
+                      animationDelay: `${i * 60}ms`,
+                    }}
+                  >
+                    ★
+                  </span>
                 ))}
               </div>
 
@@ -197,6 +210,14 @@ export function Testimonials() {
         @keyframes dotFill {
           from { width: 0%; }
           to   { width: 100%; }
+        }
+        @keyframes quotePulse {
+          from { opacity: 0; transform: scale(0.7); }
+          to   { opacity: 1; transform: scale(1); }
+        }
+        @keyframes starPop {
+          from { opacity: 0; transform: scale(0.4); }
+          to   { opacity: 1; transform: scale(1); }
         }
       `}</style>
     </section>

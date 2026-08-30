@@ -22,48 +22,26 @@ export function ContactSection() {
                 redesigning an existing space, we would love to learn more
                 about your project requirements.
               </p>
+            </Reveal>
 
-              <div className="mb-8 flex flex-col gap-5 border-t border-b border-line py-8">
-                <div>
-                  <p className="label mb-1 text-xs text-ink-faint">Studio Address</p>
-                  <p className="text-base font-medium leading-snug text-ink">
-                    {siteConfig.location}
-                  </p>
-                </div>
+            <div className="mb-8 flex flex-col border-t border-line">
+              {[
+                { label: "Studio Address", content: <p className="text-base font-medium leading-snug text-ink">{siteConfig.location}</p> },
+                { label: "Phone Inquiry", content: <a href={siteConfig.phoneHref} className="font-display text-lg text-ink transition-colors hover:text-gold">{siteConfig.phone}</a> },
+                { label: "Email Inquiry", content: <a href={`mailto:${siteConfig.email}`} className="text-base text-ink transition-colors hover:text-gold">{siteConfig.email}</a> },
+                { label: "Instagram", content: <a href={siteConfig.instagramHref} target="_blank" rel="noopener noreferrer" className="text-base text-gold hover:underline">{siteConfig.instagramHandle}</a> },
+              ].map((row, i) => (
+                <Reveal key={row.label} delay={0.1 + i * 0.06}>
+                  <div className="group relative border-b border-line py-4 pl-4">
+                    <span className="pointer-events-none absolute inset-y-0 left-0 w-[2px] scale-y-0 bg-gold transition-transform duration-300 group-hover:scale-y-100" />
+                    <p className="label mb-1 text-xs text-ink-faint">{row.label}</p>
+                    {row.content}
+                  </div>
+                </Reveal>
+              ))}
+            </div>
 
-                <div>
-                  <p className="label mb-1 text-xs text-ink-faint">Phone Inquiry</p>
-                  <a
-                    href={siteConfig.phoneHref}
-                    className="font-display text-lg text-ink transition-colors hover:text-gold"
-                  >
-                    {siteConfig.phone}
-                  </a>
-                </div>
-
-                <div>
-                  <p className="label mb-1 text-xs text-ink-faint">Email Inquiry</p>
-                  <a
-                    href={`mailto:${siteConfig.email}`}
-                    className="text-base text-ink transition-colors hover:text-gold"
-                  >
-                    {siteConfig.email}
-                  </a>
-                </div>
-
-                <div>
-                  <p className="label mb-1 text-xs text-ink-faint">Instagram</p>
-                  <a
-                    href={siteConfig.instagramHref}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="text-base text-gold hover:underline"
-                  >
-                    {siteConfig.instagramHandle}
-                  </a>
-                </div>
-              </div>
-
+            <Reveal delay={0.36}>
               <div className="flex flex-wrap gap-4">
                 <a
                   href={siteConfig.whatsappHref}

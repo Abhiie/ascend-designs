@@ -168,19 +168,29 @@ export function Faq({ limit }: { limit?: number }) {
                 </button>
               </div>
             ) : (
-              <div className="border-t border-line">
+              <div className="flex flex-col gap-3">
                 {displayedFaqs.map((faq, i) => {
                   const open = openIndex === i;
                   return (
                     <Reveal key={faq.question} y={18}>
-                      <div className="border-b border-line">
+                      <div
+                        className={`relative overflow-hidden rounded-sm border bg-surface transition-colors duration-500 ${
+                          open ? "border-gold/40 bg-surface-muted" : "border-line hover:border-line-strong"
+                        }`}
+                      >
+                        {/* Accent edge, matching the panel treatment elsewhere on the page */}
+                        <span
+                          className="pointer-events-none absolute inset-y-0 left-0 w-[3px] bg-gold transition-opacity duration-500"
+                          style={{ opacity: open ? 1 : 0 }}
+                        />
+
                         <h3>
                           <button
                             type="button"
                             onClick={() => setOpenIndex(open ? null : i)}
                             aria-expanded={open}
                             aria-controls={`faq-panel-${i}`}
-                            className="group flex w-full items-start justify-between gap-6 py-6 text-left"
+                            className="group flex w-full items-start justify-between gap-6 px-6 py-6 text-left"
                           >
                             <span
                               className={`font-display text-xl leading-snug transition-colors duration-300 sm:text-2xl ${
@@ -211,9 +221,12 @@ export function Faq({ limit }: { limit?: number }) {
                         >
                           <div className="overflow-hidden">
                             <p
-                              className={`max-w-2xl pb-8 text-base leading-relaxed text-ink-soft transition-opacity duration-500 sm:pr-8 ${
-                                open ? "opacity-100" : "opacity-0"
-                              }`}
+                              className="max-w-2xl px-6 pb-6 text-base leading-relaxed text-ink-soft transition-all duration-500 sm:pr-8"
+                              style={{
+                                opacity: open ? 1 : 0,
+                                transform: open ? "translateY(0)" : "translateY(6px)",
+                                transitionDelay: open ? "150ms" : "0ms",
+                              }}
                             >
                               {faq.answer}
                             </p>

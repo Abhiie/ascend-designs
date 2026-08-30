@@ -1,29 +1,127 @@
 "use client";
 
+import { useState } from "react";
 import Link from "next/link";
 import { Reveal } from "@/components/motion/reveal";
 import { CountUp } from "@/components/motion/count-up";
+import { ProjectImage } from "@/components/ui/project-image";
+import { useMediaQuery } from "@/lib/use-media-query";
 import { siteConfig } from "@/lib/site-config";
+import { stockImages } from "@/lib/stock-images";
 
 const PILLARS = [
   {
     num: "01",
     title: "Spatial Context",
     desc: "Designing in dialogue with microclimate, natural light, and urban surroundings.",
+    photo: stockImages.architecture,
+    tone: 2 as const,
   },
   {
     num: "02",
     title: "Material Honesty",
     desc: "Raw stone, warm woods, textured plasters and refined metals that age gracefully.",
+    photo: stockImages.adLivingJoinery,
+    tone: 0 as const,
   },
   {
     num: "03",
     title: "Turnkey Integrity",
     desc: "Ensuring what is envisioned in 3D is crafted flawlessly on-site, to the last millimetre.",
+    photo: stockImages.hero,
+    tone: 1 as const,
   },
 ];
 
+function PillarPanel({
+  pillar,
+  index,
+  active,
+  isFinePointer,
+  onActivate,
+}: {
+  pillar: (typeof PILLARS)[number];
+  index: number;
+  active: boolean;
+  isFinePointer: boolean;
+  onActivate: (i: number) => void;
+}) {
+  return (
+    <button
+      type="button"
+      aria-expanded={active}
+      onClick={() => onActivate(index)}
+      onMouseEnter={isFinePointer ? () => onActivate(index) : undefined}
+      className="group relative flex min-h-[84px] overflow-hidden text-left outline-none"
+      style={{
+        flex: active ? "5 1 0px" : "1 1 0px",
+        transition: "flex 700ms cubic-bezier(0.65,0,0.35,1)",
+      }}
+    >
+      <div
+        className="absolute inset-0 transition-transform duration-[1400ms] ease-out"
+        style={{ transform: active ? "scale(1.06)" : "scale(1)" }}
+      >
+        <ProjectImage
+          label={pillar.title}
+          tone={pillar.tone}
+          src={pillar.photo}
+          className="h-full w-full"
+          sizes="(min-width: 1024px) 40vw, 100vw"
+        />
+      </div>
+      <div
+        className="absolute inset-0 transition-colors duration-500"
+        style={{
+          background: active
+            ? "linear-gradient(to top, rgba(9,8,6,0.88) 0%, rgba(9,8,6,0.2) 60%)"
+            : "linear-gradient(to top, rgba(9,8,6,0.85) 0%, rgba(9,8,6,0.55) 100%)",
+        }}
+      />
+
+      <div className="relative z-10 flex w-full items-center gap-6 p-5 sm:p-6">
+        <span
+          className={`font-display text-base transition-colors duration-500 ${
+            active ? "text-gold" : "text-white/50"
+          }`}
+        >
+          {pillar.num}
+        </span>
+        <div className="flex-1">
+          <p
+            className={`font-display text-xl transition-colors duration-500 sm:text-2xl ${
+              active ? "text-white" : "text-white/70"
+            }`}
+          >
+            {pillar.title}
+          </p>
+          <div
+            className="overflow-hidden transition-all duration-500"
+            style={{
+              maxHeight: active ? "4rem" : "0px",
+              opacity: active ? 1 : 0,
+              transitionDelay: active ? "180ms" : "0ms",
+            }}
+          >
+            <p className="mt-2 max-w-sm text-sm leading-relaxed text-white/70">
+              {pillar.desc}
+            </p>
+          </div>
+        </div>
+      </div>
+
+      <span
+        className="pointer-events-none absolute inset-x-0 top-0 h-[2px] bg-gold transition-opacity duration-500"
+        style={{ opacity: active ? 1 : 0 }}
+      />
+    </button>
+  );
+}
+
 export function ArchitectSpotlight() {
+  const [active, setActive] = useState(0);
+  const isFinePointer = useMediaQuery("(pointer: fine)");
+
   return (
     <section id="about" className="relative overflow-hidden border-t border-line bg-surface-alt py-28 sm:py-36 lg:py-44">
       {/* Section number */}
@@ -87,22 +185,23 @@ export function ArchitectSpotlight() {
               </h3>
             </Reveal>
 
-            <div className="mt-8 flex flex-col">
-              {PILLARS.map((p, i) => (
-                <Reveal key={p.num} delay={0.15 + i * 0.07}>
-                  <div className="border-t border-line py-7">
-                    <div className="flex items-start gap-6">
-                      <span className="font-display text-base text-gold/50">{p.num}</span>
-                      <div>
-                        <p className="font-display text-xl text-ink">{p.title}</p>
-                        <p className="mt-2 text-sm leading-relaxed text-ink-soft">{p.desc}</p>
-                      </div>
-                    </div>
-                  </div>
-                </Reveal>
-              ))}
-              <div className="border-t border-line" />
-            </div>
+            <Reveal delay={0.15}>
+              <div
+                className="mt-8 flex h-[380px] flex-col gap-[2px] overflow-hidden rounded-sm"
+                onMouseLeave={isFinePointer ? () => setActive(0) : undefined}
+              >
+                {PILLARS.map((p, i) => (
+                  <PillarPanel
+                    key={p.num}
+                    pillar={p}
+                    index={i}
+                    active={active === i}
+                    isFinePointer={isFinePointer}
+                    onActivate={setActive}
+                  />
+                ))}
+              </div>
+            </Reveal>
 
             {/* Stats */}
             <Reveal delay={0.4}>
