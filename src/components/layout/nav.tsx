@@ -81,7 +81,7 @@ export function Nav() {
         <div className="hidden items-center gap-8 lg:flex">
           <ThemeSwitch tone="light" />
           <Link
-            href="/contact"
+            href="/#contact"
             className="label inline-flex items-center gap-2 border border-white/20 px-5 py-2.5 text-ink transition-colors hover:border-gold/60 hover:text-gold"
           >
             Start a Project <span aria-hidden>→</span>

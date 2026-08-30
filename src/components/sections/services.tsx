@@ -4,6 +4,7 @@ import { useState } from "react";
 import { Reveal } from "@/components/motion/reveal";
 import { ProjectImage } from "@/components/ui/project-image";
 import { stockImages } from "@/lib/stock-images";
+import { useMediaQuery } from "@/lib/use-media-query";
 
 const SERVICES = [
   {
@@ -48,8 +49,126 @@ const SERVICES = [
   },
 ];
 
+function ServicePanel({
+  svc,
+  index,
+  active,
+  isFinePointer,
+  onActivate,
+}: {
+  svc: (typeof SERVICES)[number];
+  index: number;
+  active: boolean;
+  isFinePointer: boolean;
+  onActivate: (i: number) => void;
+}) {
+  return (
+    <button
+      type="button"
+      aria-expanded={active}
+      onClick={() => onActivate(index)}
+      onMouseEnter={isFinePointer ? () => onActivate(index) : undefined}
+      className="group relative flex min-h-[110px] overflow-hidden text-left outline-none lg:min-h-0 lg:min-w-[120px]"
+      style={{
+        flex: active ? "5 1 0px" : "1 1 0px",
+        transition: "flex 700ms cubic-bezier(0.65,0,0.35,1)",
+      }}
+    >
+      {/* Background photo */}
+      <div
+        className="absolute inset-0 transition-transform duration-[1400ms] ease-out"
+        style={{ transform: active ? "scale(1.06)" : "scale(1)" }}
+      >
+        <ProjectImage
+          label={svc.title}
+          tone={svc.tone}
+          src={svc.photo}
+          className="h-full w-full"
+          sizes="(min-width: 1024px) 60vw, 100vw"
+        />
+      </div>
+      <div
+        className="absolute inset-0 transition-colors duration-500"
+        style={{
+          background: active
+            ? "linear-gradient(to top, rgba(9,8,6,0.88) 0%, rgba(9,8,6,0.25) 55%, rgba(9,8,6,0.35) 100%)"
+            : "linear-gradient(to top, rgba(9,8,6,0.82) 0%, rgba(9,8,6,0.55) 100%)",
+        }}
+      />
+
+      {/* Content */}
+      <div className="relative z-10 flex w-full flex-col justify-between p-5 sm:p-7">
+        {/* Number */}
+        <span
+          className={`font-display text-2xl font-light transition-colors duration-500 sm:text-3xl ${
+            active ? "text-gold" : "text-white/40"
+          }`}
+        >
+          {svc.num}
+        </span>
+
+        {/* Collapsed label — vertical on desktop columns, horizontal on mobile bars */}
+        <div
+          className="flex items-center justify-between transition-opacity duration-300 lg:block lg:justify-start"
+          style={{ opacity: active ? 0 : 1 }}
+        >
+          <span className="label text-white/70 lg:hidden">{svc.title}</span>
+          <span
+            aria-hidden
+            className="hidden whitespace-nowrap font-display text-xl text-white/70 lg:block"
+            style={{ writingMode: "vertical-rl", transform: "rotate(180deg)" }}
+          >
+            {svc.title}
+          </span>
+          <span aria-hidden className="text-white/30 lg:hidden">+</span>
+        </div>
+
+        {/* Expanded content */}
+        <div
+          className="max-w-lg transition-all duration-500"
+          style={{
+            opacity: active ? 1 : 0,
+            transform: active ? "translateY(0)" : "translateY(14px)",
+            transitionDelay: active ? "220ms" : "0ms",
+          }}
+        >
+          <p className="label mb-2 text-gold/80">{svc.short}</p>
+          <h3 className="font-display text-2xl font-light text-white sm:text-3xl lg:text-4xl">
+            {svc.title}
+          </h3>
+          <p className="mt-4 max-w-md text-sm leading-relaxed text-white/70 sm:text-base">
+            {svc.description}
+          </p>
+          <ul className="mt-5 flex flex-wrap gap-2">
+            {svc.deliverables.map((d, i) => (
+              <li
+                key={d}
+                className="label border border-gold/30 px-3 py-1 text-[0.5625rem] text-gold/90 transition-all duration-400"
+                style={{
+                  opacity: active ? 1 : 0,
+                  transform: active ? "translateY(0)" : "translateY(8px)",
+                  transitionDelay: active ? `${320 + i * 60}ms` : "0ms",
+                }}
+              >
+                {d}
+              </li>
+            ))}
+          </ul>
+        </div>
+      </div>
+
+      {/* Edge accent */}
+      <span
+        className="pointer-events-none absolute inset-y-0 left-0 w-[2px] bg-gold transition-opacity duration-500"
+        style={{ opacity: active ? 1 : 0 }}
+      />
+    </button>
+  );
+}
+
 export function Services() {
   const [active, setActive] = useState(0);
+  const isFinePointer = useMediaQuery("(pointer: fine)");
 
   return (
     <section
@@ -67,138 +186,34 @@ export function Services() {
       <div className="relative mx-auto max-w-[1600px] px-6 sm:px-12 lg:px-20">
         {/* Header */}
         <Reveal>
-          <div className="mb-16 flex items-center gap-5">
+          <div className="mb-10 flex items-center gap-5">
             <span className="h-px w-10 bg-gold/50" />
             <p className="label text-gold/80">Services</p>
           </div>
+          <h2 className="mb-14 font-display text-[clamp(2rem,4.5vw,4rem)] font-light leading-[1.05] text-ink">
+            What We Do
+          </h2>
         </Reveal>
 
-        <div className="grid grid-cols-1 gap-16 lg:grid-cols-12 lg:gap-10">
-          {/* Accordion list */}
-          <div className="lg:col-span-6">
-            <Reveal>
-              <h2 className="mb-12 font-display text-[clamp(2rem,4.5vw,4rem)] font-light leading-[1.05] text-ink">
-                What We Do
-              </h2>
-            </Reveal>
-
-            <div className="flex flex-col">
-              {SERVICES.map((svc, i) => (
-                <Reveal key={svc.num} delay={i * 0.06}>
-                  <button
-                    type="button"
-                    onClick={() => setActive(i)}
-                    className={`group flex w-full items-start gap-6 border-t border-line py-7 text-left transition-all duration-300 ${
-                      active === i ? "border-gold/40" : "hover:border-gold/20"
-                    }`}
-                  >
-                    {/* Number */}
-                    <span
-                      className={`font-display text-lg font-light transition-colors ${
-                        active === i ? "text-gold" : "text-ink-faint"
-                      }`}
-                    >
-                      {svc.num}
-                    </span>
-
-                    {/* Title + short */}
-                    <div className="flex-1">
-                      <div className="flex items-center justify-between">
-                        <h3
-                          className={`font-display text-2xl font-light transition-colors sm:text-3xl ${
-                            active === i ? "text-ink" : "text-ink-soft group-hover:text-ink"
-                          }`}
-                        >
-                          {svc.title}
-                        </h3>
-                        <span
-                          className={`label text-[0.5625rem] transition-colors ${
-                            active === i ? "text-gold" : "text-ink-faint"
-                          }`}
-                        >
-                          {svc.short}
-                        </span>
-                      </div>
-
-                      {/* Expanded content */}
-                      <div
-                        className={`overflow-hidden transition-all duration-500 ${
-                          active === i ? "mt-5 max-h-64" : "max-h-0"
-                        }`}
-                      >
-                        <p className="text-sm leading-relaxed text-ink-soft">
-                          {svc.description}
-                        </p>
-                        <ul className="mt-4 flex flex-wrap gap-2">
-                          {svc.deliverables.map((d) => (
-                            <li
-                              key={d}
-                              className="label border border-gold/30 px-3 py-1 text-[0.5625rem] text-gold/80"
-                            >
-                              {d}
-                            </li>
-                          ))}
-                        </ul>
-                      </div>
-                    </div>
-
-                    {/* Arrow */}
-                    <span
-                      className={`mt-1 text-ink-faint transition-[color,transform] duration-300 ${
-                        active === i ? "rotate-90 text-gold" : "group-hover:text-ink"
-                      }`}
-                    >
-                      →
-                    </span>
-                  </button>
-                </Reveal>
-              ))}
-              {/* Bottom border */}
-              <div className="border-t border-line" />
-            </div>
+        {/* Hover-expanding panels */}
+        <Reveal delay={0.1}>
+          <div
+            className="flex h-[560px] flex-col gap-[2px] overflow-hidden rounded-sm sm:h-[600px] lg:h-[620px] lg:flex-row"
+            onMouseLeave={isFinePointer ? () => setActive(0) : undefined}
+          >
+            {SERVICES.map((svc, i) => (
+              <ServicePanel
+                key={svc.num}
+                svc={svc}
+                index={i}
+                active={active === i}
+                isFinePointer={isFinePointer}
+                onActivate={setActive}
+              />
+            ))}
           </div>
-
-          {/* Sticky image panel */}
-          <div className="lg:col-span-5 lg:col-start-8">
-            <div className="sticky top-24 overflow-hidden">
-              <div
-                key={active}
-                className="relative aspect-[4/5] overflow-hidden"
-                style={{ animation: "fadeUp 0.5s ease forwards" }}
-              >
-                <ProjectImage
-                  label={SERVICES[active].title}
-                  tone={SERVICES[active].tone}
-                  src={SERVICES[active].photo}
-                  className="h-full w-full"
-                  sizes="(min-width: 1024px) 40vw, 100vw"
-                />
-                {/* Service name overlay */}
-                <div className="absolute inset-0 flex items-end p-8"
-                  style={{
-                    background:
-                      "linear-gradient(to top, rgba(12,11,9,0.7) 0%, transparent 50%)",
-                  }}
-                >
-                  <div>
-                    <p className="label text-gold/80">{SERVICES[active].num}</p>
-                    <p className="font-display text-3xl font-light text-ink">
-                      {SERVICES[active].title}
-                    </p>
-                  </div>
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
+        </Reveal>
       </div>
-
-      <style>{`
-        @keyframes fadeUp {
-          from { opacity: 0; transform: translateY(16px); }
-          to   { opacity: 1; transform: translateY(0); }
-        }
-      `}</style>
     </section>
   );
 }

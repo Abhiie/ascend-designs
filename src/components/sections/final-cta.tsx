@@ -7,7 +7,7 @@ import { stockImages } from "@/lib/stock-images";
 
 export function FinalCta() {
   return (
-    <section id="contact" className="relative overflow-hidden">
+    <section className="relative overflow-hidden">
       <ImageReveal className="absolute inset-0">
         <Parallax className="h-full w-full scale-110">
           <ProjectImage

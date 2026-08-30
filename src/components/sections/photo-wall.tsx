@@ -1,323 +1,277 @@
 "use client";
 
-import { useEffect, useRef, useState, useCallback } from "react";
+import { useCallback, useEffect, useMemo, useRef, useState } from "react";
+import Link from "next/link";
+import { gsap } from "@/lib/gsap";
 import { Reveal } from "@/components/motion/reveal";
+import { CountUp } from "@/components/motion/count-up";
+import { ProjectImage } from "@/components/ui/project-image";
+import {
+  projects as allProjects,
+  type Project,
+  type ProjectCategory,
+  type ProjectLayout,
+} from "@/data/projects";
 
-// ─── All photos flat pool ─────────────────────────────────────────────────────
-export interface Photo {
-  src: string;
-  project: string;
-  category: "residential" | "commercial" | "interiors" | "turnkey";
-  location: string;
-  year: number;
-}
+type CategoryFilter = "all" | ProjectCategory;
 
-export const ALL_PHOTOS: Photo[] = [
-  // ── Tapan Residence (21 photos) ───────────────────────────────────────────
-  ...[
-    "001","02","03","04","05","06","07","08","09",
-    "12 copy","13 copy","211 copy","212 copy","213 copy","215 copy",
-    "216 copy","311 copy","312 copy","313 copy","314 copy","315 copy",
-  ].map((f) => ({
-    src: `/projects/tapan bhai Ahmadava/${f}.webp`,
-    project: "Tapan Residence",
-    category: "residential" as const,
-    location: "Ahmedabad",
-    year: 2025,
-  })),
+// Bento sizing per project — driven by the `layout` already set in the data,
+// so adding a new project just means picking one of these four shapes.
+const LAYOUT_SPAN: Record<ProjectLayout, string> = {
+  full: "col-span-2 row-span-2",
+  horizontal: "col-span-2 row-span-1",
+  portrait: "col-span-1 row-span-2",
+  compact: "col-span-1 row-span-1",
+};
 
-  // ── Rajdhani (19 photos) ──────────────────────────────────────────────────
-  ...[
-    "1_","2_","3_","4_","5_","002_","003_",
-    "105 copy","106 copy","107 copy","108 copy","109 copy","110 copy",
-    "201 copy","202 copy","203 copy","204 copy","2_ (2)","3_ (2)",
-  ].map((f) => ({
-    src: `/projects/rajdhani mukesh bhai/${f}.webp`,
-    project: "Rajdhani Residence",
-    category: "interiors" as const,
-    location: "Ahmedabad",
-    year: 2024,
-  })),
-
-  // ── Alayam Madhuvan (11 photos) ───────────────────────────────────────────
-  ...[
-    "003_","005_","006_","1_","1_ (2)","2_","2_ (2)",
-    "25_","3_","3_ (2)","4_",
-  ].map((f) => ({
-    src: `/projects/alayam madhuvan/${f}.webp`,
-    project: "Alayam Madhuvan",
-    category: "residential" as const,
-    location: "Gujarat",
-    year: 2024,
-  })),
-
-  // ── Dr. Prakash (12 photos) ───────────────────────────────────────────────
-  ...[
-    "01_","05_","06_","20_","21_","22_",
-    "210_","211_","302_","303_","304_","305",
-  ].map((f) => ({
-    src: `/projects/DR.Prakash bhai/${f}.webp`,
-    project: "Dr. Prakash Residence",
-    category: "residential" as const,
-    location: "Ahmedabad",
-    year: 2024,
-  })),
-
-  // ── Krushnam Gruham (11 photos) ───────────────────────────────────────────
-  ...[
-    "001_","002_","003_","004_","005_","006_",
-    "001_ (2)","002_ (2)","003_ (2)","004_ (2)","f.f 02",
-  ].map((f) => ({
-    src: `/projects/KRUSHNAM GRUHAM 07 BAKA BHAI/${f}.webp`,
-    project: "Krushnam Gruham",
-    category: "residential" as const,
-    location: "Gujarat",
-    year: 2023,
-  })),
-
-  // ── Pahal 83 (16 photos) ──────────────────────────────────────────────────
-  ...[
-    "001","002","003","01","02","03","04","05",
-    "01 (2)","02 (2)","03 (2)","04 (2)","1","2","3","5",
-  ].map((f) => ({
-    src: `/projects/PAHAL83 11/${f}.webp`,
-    project: "Pahal 83",
-    category: "interiors" as const,
-    location: "Ahmedabad",
-    year: 2023,
-  })),
-
-  // ── Shreenathji Ashiyana (8 photos) ──────────────────────────────────────
-  ...[
-    "001","001 (2)","002","003",
-    "01 copy (2)","02 copy (2)","03 copy (2)","06 copy",
-  ].map((f) => ({
-    src: `/projects/SHREENATHJI ASHIYANA/${f}.webp`,
-    project: "Shreenathji Ashiyana",
-    category: "turnkey" as const,
-    location: "Gujarat",
-    year: 2023,
-  })),
-
-  // ── Bhemat Jewellers (9 photos) ───────────────────────────────────────────
-  ...[
-    "2022_09_17_07_22_IMG_1654","2022_09_17_07_22_IMG_1655",
-    "2022_09_17_07_32_IMG_1661","2022_10_07_23_38_IMG_2260",
-    "2022_10_07_23_39_IMG_2261","2022_10_07_23_39_IMG_2262",
-    "2022_10_07_23_40_IMG_2265","2022_10_07_23_40_IMG_2266","6",
-  ].map((f) => ({
-    src: `/projects/BHEMAT JWELER/${f}.webp`,
-    project: "Bhemat Jewellers",
-    category: "commercial" as const,
-    location: "Gujarat",
-    year: 2022,
-  })),
-];
-
-const CATEGORIES = [
-  { label: "All", value: "all" },
-  { label: "Residential", value: "residential" },
-  { label: "Interiors", value: "interiors" },
-  { label: "Commercial", value: "commercial" },
-  { label: "Turnkey", value: "turnkey" },
-] as const;
-
-type CategoryFilter = "all" | Photo["category"];
-
-// ─── Lightbox ─────────────────────────────────────────────────────────────────
-function Lightbox({
-  photos, index, onClose, onPrev, onNext,
+// ─── Single project tile ───────────────────────────────────────────────────
+function ProjectTile({
+  project,
+  index,
+  onClick,
 }: {
-  photos: Photo[];
+  project: Project;
   index: number;
-  onClose: () => void;
-  onPrev: () => void;
-  onNext: () => void;
+  onClick: () => void;
 }) {
-  const photo = photos[index];
+  const cardRef = useRef<HTMLButtonElement>(null);
 
   useEffect(() => {
-    const fn = (e: KeyboardEvent) => {
-      if (e.key === "Escape") onClose();
-      if (e.key === "ArrowLeft") onPrev();
-      if (e.key === "ArrowRight") onNext();
-    };
-    window.addEventListener("keydown", fn);
-    return () => window.removeEventListener("keydown", fn);
-  }, [onClose, onPrev, onNext]);
+    const el = cardRef.current;
+    if (!el) return;
+
+    const reduced = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+    if (reduced) {
+      gsap.set(el, { clipPath: "inset(0% 0% 0% 0%)", opacity: 1 });
+      return;
+    }
+
+    const ctx = gsap.context(() => {
+      gsap.fromTo(
+        el,
+        { clipPath: "inset(100% 0% 0% 0%)", opacity: 0 },
+        {
+          clipPath: "inset(0% 0% 0% 0%)",
+          opacity: 1,
+          duration: 1,
+          ease: "power3.out",
+          delay: (index % 4) * 0.08,
+          scrollTrigger: { trigger: el, start: "top 90%", once: true },
+        }
+      );
+    }, el);
+
+    return () => ctx.revert();
+  }, [index]);
 
   return (
-    <div
-      className="fixed inset-0 z-[999] flex items-center justify-center bg-[#080807]/95 backdrop-blur-md"
-      onClick={onClose}
+    <button
+      ref={cardRef}
+      type="button"
+      data-cursor="view"
+      data-cursor-label="View Project"
+      onClick={onClick}
+      className={`group relative block h-full w-full overflow-hidden bg-surface-strong text-left ${LAYOUT_SPAN[project.layout]}`}
+      style={{ clipPath: "inset(100% 0% 0% 0%)", opacity: 0 }}
+      aria-label={`View ${project.title}`}
     >
       {/* Image */}
-      <div
-        className="relative flex max-h-[92svh] max-w-[90vw] flex-col"
-        onClick={(e) => e.stopPropagation()}
-        style={{ animation: "lbFade 0.35s cubic-bezier(0.16,1,0.3,1) both" }}
-      >
-        {/* eslint-disable-next-line @next/next/no-img-element */}
-        <img
-          src={photo.src}
-          alt={photo.project}
-          className="max-h-[80svh] w-auto max-w-full object-contain"
-          loading="eager"
+      <div className="absolute inset-0 transition-transform duration-700 ease-out group-hover:scale-[1.06]">
+        <ProjectImage
+          label={project.coverImage}
+          tone={project.tone}
+          src={project.image}
+          sizes="(min-width: 1024px) 45vw, 90vw"
+          className="h-full w-full"
         />
-        {/* Info bar */}
-        <div className="mt-5 flex items-end justify-between gap-8">
-          <div>
-            <p className="font-display text-xl font-light text-white/90">{photo.project}</p>
-            <p className="label mt-1 text-gold/70">{photo.location} · {photo.year}</p>
-          </div>
-          <p className="label shrink-0 text-white/30">{index + 1} / {photos.length}</p>
+      </div>
+
+      {/* Photo-count badge — always visible, signals depth before the click */}
+      <div className="absolute right-3 top-3 flex items-center gap-1.5 bg-[#0c0b09]/60 px-2.5 py-1.5 backdrop-blur-sm">
+        <span aria-hidden className="block h-1 w-1 rounded-full bg-gold" />
+        <span className="label text-[0.55rem] text-white/80">
+          {project.gallery.length} Photos
+        </span>
+      </div>
+
+      {/* Bottom gradient + info */}
+      <div className="absolute inset-0 flex flex-col justify-end bg-gradient-to-t from-[#0c0b09]/95 via-[#0c0b09]/15 to-transparent p-4 sm:p-6">
+        <p className="label text-gold/80">{project.category}</p>
+        <h3 className="mt-1.5 font-display text-xl font-light leading-tight text-white sm:text-2xl lg:text-3xl">
+          {project.title}
+        </h3>
+        <div className="mt-2 flex translate-y-2 items-center justify-between opacity-0 transition-all duration-400 group-hover:translate-y-0 group-hover:opacity-100">
+          <p className="label text-white/50">
+            {project.location} · {project.year}
+          </p>
+          <span aria-hidden className="text-gold">→</span>
         </div>
       </div>
 
-      {/* Nav arrows */}
-      <button type="button" aria-label="Prev"
-        onClick={(e) => { e.stopPropagation(); onPrev(); }}
-        className="group absolute left-4 top-1/2 -translate-y-1/2 flex h-12 w-12 items-center justify-center border border-white/15 text-white/50 transition-all hover:border-gold/50 hover:text-gold sm:left-8">
-        ←
-      </button>
-      <button type="button" aria-label="Next"
-        onClick={(e) => { e.stopPropagation(); onNext(); }}
-        className="group absolute right-4 top-1/2 -translate-y-1/2 flex h-12 w-12 items-center justify-center border border-white/15 text-white/50 transition-all hover:border-gold/50 hover:text-gold sm:right-8">
-        →
-      </button>
-      <button type="button" aria-label="Close"
-        onClick={onClose}
-        className="absolute right-5 top-5 label text-white/40 transition-colors hover:text-gold">
-        ✕
-      </button>
+      <div className="pointer-events-none absolute inset-0 border border-white/0 transition-colors duration-300 group-hover:border-gold/30" />
+    </button>
+  );
+}
+
+// ─── Project viewer (case-study lightbox) ──────────────────────────────────
+function ProjectViewer({
+  project,
+  imageIndex,
+  onClose,
+  onPrevImage,
+  onNextImage,
+  onNextProject,
+}: {
+  project: Project;
+  imageIndex: number;
+  onClose: () => void;
+  onPrevImage: () => void;
+  onNextImage: () => void;
+  onNextProject: () => void;
+}) {
+  useEffect(() => {
+    const fn = (e: KeyboardEvent) => {
+      if (e.key === "Escape") onClose();
+      if (e.key === "ArrowLeft") onPrevImage();
+      if (e.key === "ArrowRight") onNextImage();
+    };
+    window.addEventListener("keydown", fn);
+    return () => window.removeEventListener("keydown", fn);
+  }, [onClose, onPrevImage, onNextImage]);
+
+  const src = project.gallery[imageIndex] ?? project.image;
+
+  return (
+    <div className="fixed inset-0 z-[999] flex flex-col bg-[#080807]/97 backdrop-blur-md">
+      {/* Top bar */}
+      <div className="flex items-center justify-between px-5 py-5 sm:px-10">
+        <div>
+          <p className="label text-gold/80">{project.category}</p>
+          <h3 className="font-display text-xl font-light text-white sm:text-2xl">
+            {project.title}
+          </h3>
+        </div>
+        <button
+          type="button"
+          aria-label="Close"
+          onClick={onClose}
+          className="label text-white/40 transition-colors hover:text-gold"
+        >
+          Close ✕
+        </button>
+      </div>
+
+      {/* Image */}
+      <div className="relative flex flex-1 items-center justify-center px-4 sm:px-16">
+        {/* eslint-disable-next-line @next/next/no-img-element */}
+        <img
+          key={src}
+          src={src}
+          alt={project.title}
+          className="max-h-[65svh] w-auto max-w-full object-contain"
+          style={{ animation: "pvFade 0.4s cubic-bezier(0.16,1,0.3,1) both" }}
+          loading="eager"
+        />
+        {project.gallery.length > 1 && (
+          <>
+            <button
+              type="button"
+              aria-label="Previous image"
+              onClick={onPrevImage}
+              className="absolute left-2 top-1/2 flex h-11 w-11 -translate-y-1/2 items-center justify-center border border-white/15 text-white/50 transition-colors hover:border-gold/50 hover:text-gold sm:left-6"
+            >
+              ←
+            </button>
+            <button
+              type="button"
+              aria-label="Next image"
+              onClick={onNextImage}
+              className="absolute right-2 top-1/2 flex h-11 w-11 -translate-y-1/2 items-center justify-center border border-white/15 text-white/50 transition-colors hover:border-gold/50 hover:text-gold sm:right-6"
+            >
+              →
+            </button>
+          </>
+        )}
+      </div>
+
+      {/* Bottom info bar */}
+      <div className="flex flex-col gap-5 border-t border-white/10 px-5 py-6 sm:flex-row sm:items-end sm:justify-between sm:px-10">
+        <div className="max-w-xl">
+          <p className="label text-white/40">
+            {project.location} · {project.year}
+          </p>
+          <p className="mt-2 text-sm leading-relaxed text-white/60">
+            {project.description}
+          </p>
+          <div className="mt-3 flex flex-wrap gap-2">
+            {project.services.map((s) => (
+              <span
+                key={s}
+                className="label border border-white/15 px-2.5 py-1 text-[0.55rem] text-white/50"
+              >
+                {s}
+              </span>
+            ))}
+          </div>
+        </div>
+        <div className="flex shrink-0 items-center gap-6">
+          <p className="label text-white/30">
+            {imageIndex + 1} / {project.gallery.length}
+          </p>
+          <button
+            type="button"
+            onClick={onNextProject}
+            className="label inline-flex items-center gap-2 text-white/50 transition-colors hover:text-gold"
+          >
+            Next Project <span aria-hidden>→</span>
+          </button>
+        </div>
+      </div>
 
       <style>{`
-        @keyframes lbFade {
-          from { opacity:0; transform:scale(0.94) translateY(16px); }
-          to   { opacity:1; transform:scale(1) translateY(0); }
+        @keyframes pvFade {
+          from { opacity: 0; transform: scale(0.96); }
+          to   { opacity: 1; transform: scale(1); }
         }
       `}</style>
     </div>
   );
 }
 
-// ─── Single animated photo card ───────────────────────────────────────────────
-function PhotoCard({
-  photo,
-  index,
-  onClick,
-}: {
-  photo: Photo;
-  index: number;
-  onClick: () => void;
-}) {
-  const cardRef = useRef<HTMLButtonElement>(null);
-
-  // GSAP clip-path reveal on scroll
-  useEffect(() => {
-    let ctx: any;
-    (async () => {
-      const { gsap } = await import("@/lib/gsap");
-      const { ScrollTrigger } = await import("gsap/ScrollTrigger");
-      gsap.registerPlugin(ScrollTrigger);
-      if (!cardRef.current) return;
-
-      ctx = gsap.context(() => {
-        gsap.fromTo(
-          cardRef.current,
-          {
-            clipPath: "inset(100% 0% 0% 0%)",
-            opacity: 0,
-          },
-          {
-            clipPath: "inset(0% 0% 0% 0%)",
-            opacity: 1,
-            duration: 0.9,
-            ease: "power3.out",
-            delay: (index % 4) * 0.08,
-            scrollTrigger: {
-              trigger: cardRef.current,
-              start: "top 88%",
-              toggleActions: "play none none none",
-            },
-          }
-        );
-      }, cardRef.current);
-    })();
-    return () => ctx?.revert();
-  }, [index]);
-
-  // Magnetic hover tilt
-  function onMouseMove(e: React.MouseEvent<HTMLButtonElement>) {
-    const el = cardRef.current;
-    if (!el) return;
-    const rect = el.getBoundingClientRect();
-    const x = ((e.clientX - rect.left) / rect.width - 0.5) * 10;
-    const y = ((e.clientY - rect.top) / rect.height - 0.5) * -10;
-    el.style.transform = `perspective(600px) rotateX(${y}deg) rotateY(${x}deg) scale(1.02)`;
-  }
-  function onMouseLeave() {
-    if (cardRef.current) cardRef.current.style.transform = "";
-  }
-
-  return (
-    <button
-      ref={cardRef}
-      type="button"
-      className="group relative block w-full overflow-hidden bg-surface-strong text-left"
-      style={{
-        clipPath: "inset(100% 0% 0% 0%)",
-        opacity: 0,
-        transition: "transform 0.4s cubic-bezier(0.23,1,0.32,1)",
-        willChange: "transform",
-      }}
-      onClick={onClick}
-      onMouseMove={onMouseMove}
-      onMouseLeave={onMouseLeave}
-      aria-label={`View ${photo.project}`}
-    >
-      {/* Image */}
-      <div className="aspect-[4/3] overflow-hidden">
-        {/* eslint-disable-next-line @next/next/no-img-element */}
-        <img
-          src={photo.src}
-          alt={photo.project}
-          loading="lazy"
-          decoding="async"
-          className="h-full w-full object-cover transition-transform duration-700 ease-out group-hover:scale-[1.07]"
-        />
-      </div>
-
-      {/* Info reveal on hover */}
-      <div className="absolute inset-0 flex flex-col justify-end bg-gradient-to-t from-[#0c0b09]/90 via-[#0c0b09]/20 to-transparent p-4 opacity-0 transition-opacity duration-400 group-hover:opacity-100 sm:p-5">
-        <p className="font-display text-base font-light text-white sm:text-lg">{photo.project}</p>
-        <div className="mt-1 flex items-center justify-between">
-          <p className="label text-[0.5rem] text-gold/80">{photo.location}</p>
-          <p className="label text-[0.5rem] text-white/40">{photo.year}</p>
-        </div>
-      </div>
-
-      {/* Gold corner accent */}
-      <div className="absolute right-0 top-0 h-0 w-0 border-l-[36px] border-t-[36px] border-l-transparent border-t-gold/0 transition-[border-top-color] duration-300 group-hover:border-t-gold/80" />
-    </button>
-  );
-}
-
-// ─── Project Wall ─────────────────────────────────────────────────────────────
+// ─── Project Wall ───────────────────────────────────────────────────────────
 export function ProjectWall() {
   const [activeFilter, setActiveFilter] = useState<CategoryFilter>("all");
-  const [lightboxIndex, setLightboxIndex] = useState<number | null>(null);
-  const [showAll, setShowAll] = useState(false);
+  const [activeIndex, setActiveIndex] = useState<number | null>(null);
+  const [imageIndex, setImageIndex] = useState(0);
   const filterBarRef = useRef<HTMLDivElement>(null);
   const indicatorRef = useRef<HTMLSpanElement>(null);
 
-  const filtered = activeFilter === "all"
-    ? ALL_PHOTOS
-    : ALL_PHOTOS.filter((p) => p.category === activeFilter);
+  const totalPhotos = useMemo(
+    () => allProjects.reduce((sum, p) => sum + p.gallery.length, 0),
+    []
+  );
 
-  const visible = showAll ? filtered : filtered.slice(0, 20);
+  // Only show categories that actually have a project in them.
+  const categories = useMemo(() => {
+    const counts = new Map<ProjectCategory, number>();
+    allProjects.forEach((p) =>
+      counts.set(p.category, (counts.get(p.category) ?? 0) + 1)
+    );
+    return [
+      { label: "All Work", value: "all" as const, count: allProjects.length },
+      ...Array.from(counts.entries()).map(([value, count]) => ({
+        label: value.charAt(0).toUpperCase() + value.slice(1),
+        value,
+        count,
+      })),
+    ];
+  }, []);
 
-  // Animated filter indicator underline
+  const filtered =
+    activeFilter === "all"
+      ? allProjects
+      : allProjects.filter((p) => p.category === activeFilter);
+
   const moveIndicator = useCallback((btn: HTMLButtonElement) => {
     const bar = filterBarRef.current;
     const ind = indicatorRef.current;
@@ -330,46 +284,60 @@ export function ProjectWall() {
 
   function handleFilter(val: CategoryFilter, e: React.MouseEvent<HTMLButtonElement>) {
     setActiveFilter(val);
-    setShowAll(false);
     moveIndicator(e.currentTarget);
   }
 
-  function openLightbox(idxInFiltered: number) {
-    setLightboxIndex(idxInFiltered);
-    document.body.style.overflow = "hidden";
+  function openProject(idx: number) {
+    setActiveIndex(idx);
+    setImageIndex(0);
   }
-  function closeLightbox() {
-    setLightboxIndex(null);
-    document.body.style.overflow = "";
+  function closeProject() {
+    setActiveIndex(null);
   }
-  function goPrev() {
-    setLightboxIndex((i) => i === null ? null : (i - 1 + filtered.length) % filtered.length);
+  function prevImage() {
+    if (activeIndex === null) return;
+    const len = filtered[activeIndex].gallery.length;
+    setImageIndex((i) => (i - 1 + len) % len);
   }
-  function goNext() {
-    setLightboxIndex((i) => i === null ? null : (i + 1) % filtered.length);
+  function nextImage() {
+    if (activeIndex === null) return;
+    const len = filtered[activeIndex].gallery.length;
+    setImageIndex((i) => (i + 1) % len);
   }
+  function nextProject() {
+    setActiveIndex((i) => (i === null ? null : (i + 1) % filtered.length));
+    setImageIndex(0);
+  }
+
+  const activeProject = activeIndex !== null ? filtered[activeIndex] : null;
+
+  useEffect(() => {
+    document.body.style.overflow = activeProject ? "hidden" : "";
+    return () => {
+      document.body.style.overflow = "";
+    };
+  }, [activeProject]);
 
   return (
     <>
       <section id="work" className="px-4 pb-32 pt-28 sm:px-8 sm:pb-40 sm:pt-36 lg:px-12 lg:pb-48 lg:pt-44">
         <div className="mx-auto max-w-[1600px]">
-
           {/* ── Header ──────────────────────────────────────────────────── */}
           <Reveal>
-            <div className="mb-14 flex flex-col gap-4 sm:flex-row sm:items-end sm:justify-between">
-              <div>
-                <div className="mb-5 flex items-center gap-4">
-                  <span className="h-px w-10 bg-gold/50" />
-                  <p className="label text-gold/70">Portfolio</p>
-                </div>
-                <h2 className="font-display text-[clamp(2.5rem,5.5vw,5rem)] font-light leading-[1.02] text-ink">
-                  40+ Completed
-                  <br />
-                  <em className="italic text-gold">Projects</em>
-                </h2>
-              </div>
-              <p className="max-w-[280px] text-sm leading-relaxed text-ink-soft">
-                Every space below was designed, visualised, and delivered by Ascend Designs.
+            <div className="mb-6 flex items-center gap-4">
+              <span className="h-px w-10 bg-gold/50" />
+              <p className="label text-gold/70">Portfolio</p>
+            </div>
+            <div className="mb-14 flex flex-col gap-6 sm:flex-row sm:items-end sm:justify-between">
+              <h2 className="font-display text-[clamp(2.75rem,7vw,6.5rem)] font-light leading-[0.98] text-ink">
+                <CountUp value={40} suffix="+" />
+                <br />
+                <em className="italic text-gold">Completed Projects</em>
+              </h2>
+              <p className="max-w-[300px] text-sm leading-relaxed text-ink-soft">
+                A selection of the work we&rsquo;re proudest of —{" "}
+                {allProjects.length} featured case studies, {totalPhotos}+
+                photographs. Click any project to step inside.
               </p>
             </div>
           </Reveal>
@@ -381,24 +349,19 @@ export function ProjectWall() {
                 ref={filterBarRef}
                 className="relative flex flex-wrap gap-2 border-b border-line pb-px sm:gap-0"
               >
-                {CATEGORIES.map(({ label, value }) => (
+                {categories.map(({ label, value, count }) => (
                   <button
                     key={value}
                     type="button"
-                    onClick={(e) => handleFilter(value as CategoryFilter, e)}
+                    onClick={(e) => handleFilter(value, e)}
                     className={`label px-4 py-3 text-[0.625rem] transition-colors sm:px-5 ${
                       activeFilter === value ? "text-gold" : "text-ink-faint hover:text-ink-soft"
                     }`}
                   >
                     {label}
-                    {value !== "all" && (
-                      <span className="ml-1.5 text-[0.5rem] opacity-50">
-                        ({ALL_PHOTOS.filter((p) => p.category === value).length})
-                      </span>
-                    )}
+                    <span className="ml-1.5 text-[0.5rem] opacity-50">({count})</span>
                   </button>
                 ))}
-                {/* Sliding underline */}
                 <span
                   ref={indicatorRef}
                   className="absolute bottom-0 h-[2px] bg-gold transition-all duration-300 ease-out"
@@ -408,47 +371,48 @@ export function ProjectWall() {
             </div>
           </Reveal>
 
-          {/* ── Photo grid ───────────────────────────────────────────────── */}
-          <div className="grid grid-cols-2 gap-2 sm:grid-cols-3 sm:gap-3 lg:grid-cols-4 lg:gap-3 xl:grid-cols-5">
-            {visible.map((photo, i) => (
-              <PhotoCard
-                key={`${photo.src}-${activeFilter}`}
-                photo={photo}
+          {/* ── Bento project grid ───────────────────────────────────────── */}
+          <div
+            key={activeFilter}
+            className="grid auto-rows-[200px] grid-cols-2 gap-3 [grid-auto-flow:dense] sm:auto-rows-[240px] sm:grid-cols-3 sm:gap-4 lg:auto-rows-[280px] lg:grid-cols-4"
+          >
+            {filtered.map((project, i) => (
+              <ProjectTile
+                key={project.id}
+                project={project}
                 index={i}
-                onClick={() => openLightbox(filtered.indexOf(photo))}
+                onClick={() => openProject(i)}
               />
             ))}
           </div>
 
-          {/* ── Stats bar ────────────────────────────────────────────────── */}
+          {/* ── Footer ───────────────────────────────────────────────────── */}
           <Reveal delay={0.1}>
-            <div className="mt-10 flex flex-wrap items-center gap-6 border-t border-line pt-8 text-ink-faint">
-              <span className="label text-[0.5625rem]">
-                Showing <span className="text-gold">{visible.length}</span> of{" "}
-                <span className="text-ink-soft">{filtered.length}</span> images
+            <div className="mt-14 flex flex-wrap items-center justify-between gap-6 border-t border-line pt-8">
+              <span className="label text-[0.5625rem] text-ink-faint">
+                Showing <span className="text-gold">{filtered.length}</span> featured{" "}
+                {filtered.length === 1 ? "project" : "projects"}
               </span>
-              {!showAll && filtered.length > 20 && (
-                <button
-                  type="button"
-                  onClick={() => setShowAll(true)}
-                  className="label ml-auto inline-flex items-center gap-3 border border-line-strong px-7 py-3.5 text-ink-soft transition-colors hover:border-gold/50 hover:text-gold"
-                >
-                  Load {filtered.length - 20} More <span aria-hidden>↓</span>
-                </button>
-              )}
+              <Link
+                href="/projects"
+                className="label inline-flex items-center gap-3 border border-line-strong px-7 py-3.5 text-ink-soft transition-colors hover:border-gold/50 hover:text-gold"
+              >
+                View Full Portfolio <span aria-hidden>→</span>
+              </Link>
             </div>
           </Reveal>
         </div>
       </section>
 
-      {/* ── Lightbox ─────────────────────────────────────────────────────── */}
-      {lightboxIndex !== null && (
-        <Lightbox
-          photos={filtered}
-          index={lightboxIndex}
-          onClose={closeLightbox}
-          onPrev={goPrev}
-          onNext={goNext}
+      {/* ── Case-study viewer ────────────────────────────────────────────── */}
+      {activeProject && (
+        <ProjectViewer
+          project={activeProject}
+          imageIndex={imageIndex}
+          onClose={closeProject}
+          onPrevImage={prevImage}
+          onNextImage={nextImage}
+          onNextProject={nextProject}
         />
       )}
     </>

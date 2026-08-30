@@ -6,8 +6,9 @@ import Link from "next/link";
 import { gsap } from "@/lib/gsap";
 import { useIsReady } from "@/components/loader/loader";
 import { stockImages } from "@/lib/stock-images";
+import { SplitFlapBoard } from "@/components/ui/split-flap-board";
 
-const TICKER_ITEMS = [
+const FLAP_WORDS = [
   "Architecture",
   "Interior Design",
   "Turnkey Projects",
@@ -19,7 +20,7 @@ const TICKER_ITEMS = [
 ];
 
 const ANIMATED =
-  "[data-hero-frame],[data-hero-eyebrow],[data-hero-line],[data-hero-rule],[data-hero-sub],[data-hero-cta],[data-hero-scroll],[data-hero-ticker],[data-hero-count]";
+  "[data-hero-frame],[data-hero-eyebrow],[data-hero-line],[data-hero-rule],[data-hero-sub],[data-hero-cta],[data-hero-scroll],[data-hero-flap],[data-hero-count]";
 
 export function Hero() {
   const rootRef = useRef<HTMLDivElement>(null);
@@ -38,7 +39,7 @@ export function Hero() {
       gsap.set("[data-hero-sub]", { opacity: 0, y: 18 });
       gsap.set("[data-hero-cta]", { opacity: 0, y: 20 });
       gsap.set("[data-hero-scroll]", { opacity: 0 });
-      gsap.set("[data-hero-ticker]", { yPercent: 100 });
+      gsap.set("[data-hero-flap]", { yPercent: 100 });
       gsap.set("[data-hero-count]", { opacity: 0, y: 12 });
     }, root);
     return () => ctx.revert();
@@ -69,7 +70,7 @@ export function Hero() {
         .to("[data-hero-cta]", { opacity: 1, y: 0, duration: 0.7, stagger: 0.1 }, 1.4)
         .to("[data-hero-count]", { opacity: 1, y: 0, duration: 0.7, stagger: 0.08 }, 1.5)
         .to("[data-hero-scroll]", { opacity: 1, duration: 0.7 }, 1.7)
-        .to("[data-hero-ticker]", { yPercent: 0, duration: 1.0, ease: "power3.out" }, 1.6)
+        .to("[data-hero-flap]", { yPercent: 0, duration: 1.0, ease: "power3.out" }, 1.6)
         // Slow Ken Burns drift
         .to("[data-hero-frame]", { scale: 1.07, duration: 30, ease: "none" }, 2.6);
     }, root);
@@ -96,7 +97,7 @@ export function Hero() {
         </div>
         {/* Base dark scrim */}
         <div className="absolute inset-0 bg-[#070604]/50" />
-        {/* Gradient: heavy top for nav, lighter mid, heavy bottom for ticker */}
+        {/* Gradient: heavy top for nav, lighter mid, heavy bottom for legibility */}
         <div
           className="absolute inset-0"
           style={{
@@ -161,14 +162,14 @@ export function Hero() {
         <div className="mt-10 flex flex-col items-start gap-4 sm:flex-row sm:items-center sm:gap-6">
           <Link
             data-hero-cta
-            href="#projects"
+            href="#work"
             className="btn-shimmer label inline-flex items-center gap-3 px-8 py-4 text-[#0c0b09] transition-opacity hover:opacity-90"
           >
             Explore Portfolio <span aria-hidden>→</span>
           </Link>
           <Link
             data-hero-cta
-            href="#studio"
+            href="#about"
             className="label inline-flex items-center gap-3 border border-white/25 px-8 py-4 text-white/80 transition-colors hover:border-gold/60 hover:text-gold"
           >
             Our Story
@@ -208,26 +209,13 @@ export function Hero() {
         </span>
       </div>
 
-      {/* ── Services ticker ── */}
+      {/* ── Split-flap board — disciplines cycling like an airport departure board ── */}
       <div
-        data-hero-ticker
-        className="relative z-10 w-full overflow-hidden border-t border-white/10 bg-gold/10 py-3 backdrop-blur-sm"
+        data-hero-flap
+        className="relative z-10 w-full overflow-x-auto border-t border-white/10 px-6 py-5 sm:px-12 lg:px-20"
+        style={{ scrollbarWidth: "none" }}
       >
-        <div className="marquee-track">
-          {[0, 1].map((copy) => (
-            <div key={copy} className="flex shrink-0" aria-hidden={copy === 1}>
-              {TICKER_ITEMS.map((item) => (
-                <span
-                  key={item}
-                  className="label flex items-center gap-7 whitespace-nowrap pl-7 text-[0.5625rem] text-gold/80 tracking-[0.26em]"
-                >
-                  {item}
-                  <span aria-hidden className="text-[0.4rem] text-gold/40">◆</span>
-                </span>
-              ))}
-            </div>
-          ))}
-        </div>
+        <SplitFlapBoard words={FLAP_WORDS} />
       </div>
     </section>
   );

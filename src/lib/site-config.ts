@@ -19,13 +19,16 @@ export const siteConfig = {
   hours: "Mon - Sat: 10:00 AM - 7:00 PM",
 } as const;
 
+// Everything but Projects lives as a section on the one-page home now — these
+// are in-page anchors, not routes. Projects keeps its own page so individual
+// case studies still have stable, linkable URLs.
 export const navLinks = [
   { label: "Home", href: "/" },
-  { label: "About", href: "/about" },
+  { label: "About", href: "/#about" },
   { label: "Projects", href: "/projects" },
-  { label: "Services", href: "/services" },
-  { label: "FAQ", href: "/faq" },
-  { label: "Contact", href: "/contact" },
+  { label: "Services", href: "/#services" },
+  { label: "FAQ", href: "/#faq" },
+  { label: "Contact", href: "/#contact" },
 ] as const;
 
 export const socialLinks = [

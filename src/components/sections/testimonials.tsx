@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { Reveal } from "@/components/motion/reveal";
 
 const TESTIMONIALS = [
@@ -42,12 +42,30 @@ const TESTIMONIALS = [
   },
 ];
 
+const AUTOPLAY_MS = 6000;
+
 export function Testimonials() {
   const [index, setIndex] = useState(0);
+  const [direction, setDirection] = useState(1);
+  const [paused, setPaused] = useState(false);
 
   function go(delta: number) {
+    setDirection(delta > 0 ? 1 : -1);
     setIndex((c) => (c + delta + TESTIMONIALS.length) % TESTIMONIALS.length);
   }
+
+  function goTo(i: number) {
+    setDirection(i > index ? 1 : -1);
+    setIndex(i);
+  }
+
+  // Auto-advance, paused on hover and skipped entirely under reduced motion.
+  useEffect(() => {
+    if (paused) return;
+    if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) return;
+    const id = setInterval(() => go(1), AUTOPLAY_MS);
+    return () => clearInterval(id);
+  }, [index, paused]);
 
   const current = TESTIMONIALS[index];
 
@@ -71,7 +89,11 @@ export function Testimonials() {
         </Reveal>
 
         <Reveal delay={0.08}>
-          <div className="grid grid-cols-1 gap-10 lg:grid-cols-12">
+          <div
+            className="grid grid-cols-1 gap-10 lg:grid-cols-12"
+            onMouseEnter={() => setPaused(true)}
+            onMouseLeave={() => setPaused(false)}
+          >
             {/* Large quote mark */}
             <div className="lg:col-span-1">
               <span className="font-display text-[6rem] leading-none text-gold/20 select-none">
@@ -80,7 +102,7 @@ export function Testimonials() {
             </div>
 
             {/* Quote body */}
-            <div className="lg:col-span-9">
+            <div className="lg:col-span-9 overflow-hidden">
               {/* Stars */}
               <div className="mb-6 flex gap-1 text-gold" aria-label={`${current.rating} stars`}>
                 {Array.from({ length: current.rating }).map((_, i) => (
@@ -92,7 +114,9 @@ export function Testimonials() {
               <blockquote
                 key={index}
                 className="font-display text-[clamp(1.5rem,3.5vw,2.75rem)] font-light italic leading-[1.3] text-ink"
-                style={{ animation: "fadeUp 0.45s ease forwards" }}
+                style={{
+                  animation: `${direction > 0 ? "slideInRight" : "slideInLeft"} 0.55s cubic-bezier(0.16,1,0.3,1) both`,
+                }}
               >
                 &ldquo;{current.quote}&rdquo;
               </blockquote>
@@ -109,18 +133,29 @@ export function Testimonials() {
 
                 {/* Navigation */}
                 <div className="flex items-center gap-6 sm:flex-col sm:items-end">
-                  {/* Dots */}
+                  {/* Dots — active one fills as a progress bar toward the next auto-advance */}
                   <div className="flex gap-2">
                     {TESTIMONIALS.map((_, i) => (
                       <button
                         key={i}
                         type="button"
-                        onClick={() => setIndex(i)}
+                        onClick={() => goTo(i)}
                         aria-label={`Go to slide ${i + 1}`}
-                        className={`h-1 rounded-none transition-all duration-300 ${
-                          index === i ? "w-8 bg-gold" : "w-2 bg-ink-faint/40 hover:bg-ink-faint"
+                        className={`relative h-1 overflow-hidden rounded-none transition-[width,background-color] duration-300 ${
+                          index === i ? "w-8 bg-ink-faint/20" : "w-2 bg-ink-faint/40 hover:bg-ink-faint"
                         }`}
-                      />
+                      >
+                        {index === i && (
+                          <span
+                            aria-hidden
+                            className="absolute inset-y-0 left-0 bg-gold"
+                            style={{
+                              animation: `dotFill ${AUTOPLAY_MS}ms linear forwards`,
+                              animationPlayState: paused ? "paused" : "running",
+                            }}
+                          />
+                        )}
+                      </button>
                     ))}
                   </div>
 
@@ -151,9 +186,17 @@ export function Testimonials() {
       </div>
 
       <style>{`
-        @keyframes fadeUp {
-          from { opacity: 0; transform: translateY(12px); }
-          to   { opacity: 1; transform: translateY(0); }
+        @keyframes slideInRight {
+          from { opacity: 0; transform: translateX(24px); }
+          to   { opacity: 1; transform: translateX(0); }
+        }
+        @keyframes slideInLeft {
+          from { opacity: 0; transform: translateX(-24px); }
+          to   { opacity: 1; transform: translateX(0); }
+        }
+        @keyframes dotFill {
+          from { width: 0%; }
+          to   { width: 100%; }
         }
       `}</style>
     </section>

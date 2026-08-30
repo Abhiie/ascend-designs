@@ -2,6 +2,7 @@
 
 import { siteConfig } from "@/lib/site-config";
 import { Reveal } from "@/components/motion/reveal";
+import { ImageReveal } from "@/components/motion/image-reveal";
 
 export function LocationMap() {
   // Encoded query for Money Plant High Street, Sarkhej, Ahmedabad
@@ -33,7 +34,7 @@ export function LocationMap() {
 
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-10 items-stretch">
           {/* Map Frame */}
-          <div className="lg:col-span-8 rounded-lg overflow-hidden border border-line min-h-[360px] sm:min-h-[420px] bg-surface-muted relative">
+          <ImageReveal className="lg:col-span-8 rounded-lg overflow-hidden border border-line min-h-[360px] sm:min-h-[420px] bg-surface-muted relative">
             <iframe
               title="Ascend Designs Studio Location"
               src={mapEmbedUrl}
@@ -45,10 +46,10 @@ export function LocationMap() {
               referrerPolicy="no-referrer-when-downgrade"
               className="w-full h-full"
             />
-          </div>
+          </ImageReveal>
 
           {/* Address Details Box */}
-          <div className="lg:col-span-4 flex flex-col justify-between border border-line p-8 sm:p-10 bg-surface">
+          <Reveal delay={0.1} className="lg:col-span-4 flex flex-col justify-between border border-line p-8 sm:p-10 bg-surface">
             <div>
               <p className="label text-gold mb-4">Ascend Designs Head Office</p>
               
@@ -100,7 +101,7 @@ export function LocationMap() {
                 {siteConfig.instagramHandle}
               </a>
             </div>
-          </div>
+          </Reveal>
         </div>
       </div>
     </section>

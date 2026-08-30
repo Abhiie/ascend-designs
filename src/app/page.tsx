@@ -1,12 +1,14 @@
 import { Hero } from "@/components/sections/hero";
 // import { RoomWalkthrough } from "@/components/sections/room-walkthrough"; // hidden until video is ready
 import { ProjectWall } from "@/components/sections/photo-wall";
-import { StudioIntro } from "@/components/sections/studio-intro";
-import { FeaturedProject } from "@/components/sections/featured-project";
+import { ArchitectSpotlight } from "@/components/sections/architect-spotlight";
 import { Services } from "@/components/sections/services";
+import { TurnkeyProcess } from "@/components/sections/turnkey-process";
 import { Testimonials } from "@/components/sections/testimonials";
-import { InstagramWall } from "@/components/sections/instagram-wall";
+import { Faq } from "@/components/sections/faq";
 import { FinalCta } from "@/components/sections/final-cta";
+import { ContactSection } from "@/components/sections/contact-section";
+import { LocationMap } from "@/components/ui/location-map";
 
 export default function Home() {
   return (
@@ -20,23 +22,25 @@ export default function Home() {
       {/* 3. Project Wall — all real client work */}
       <ProjectWall />
 
-      {/* 4. Brief studio intro */}
-      <StudioIntro />
+      {/* 4. About — the architect */}
+      <ArchitectSpotlight />
 
-      {/* 5. Featured project */}
-      <FeaturedProject />
-
-      {/* 6. What we do */}
+      {/* 5. Services — capabilities & process */}
       <Services />
+      <TurnkeyProcess />
 
-      {/* 7. Client voices */}
+      {/* 6. Client voices */}
       <Testimonials />
 
-      {/* 8. Instagram live feed */}
-      <InstagramWall />
+      {/* 7. FAQ */}
+      <Faq />
 
-      {/* 9. Final CTA */}
+      {/* 8. Final CTA */}
       <FinalCta />
+
+      {/* 9. Contact — form + studio location */}
+      <ContactSection />
+      <LocationMap />
     </main>
   );
 }

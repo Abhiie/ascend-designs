@@ -101,17 +101,6 @@ button {
   padding-bottom: 0.08em;
 }
 
-/* ── Marquee ────────────────────────────────────────────────────────────── */
-@keyframes marquee-x {
-  from { transform: translate3d(0, 0, 0); }
-  to   { transform: translate3d(-50%, 0, 0); }
-}
-.marquee-track {
-  display: flex;
-  width: max-content;
-  animation: marquee-x 50s linear infinite;
-}
-
 /* ── Scroll cue ─────────────────────────────────────────────────────────── */
 @keyframes scroll-cue {
   0%   { opacity: 0; transform: translateY(-3px); }
@@ -155,7 +144,7 @@ button {
 
 /* ── Reduced motion ─────────────────────────────────────────────────────── */
 @media (prefers-reduced-motion: reduce) {
-  .marquee-track, .scroll-cue-dot {
+  .scroll-cue-dot {
     animation: none !important;
   }
   *, *::before, *::after {

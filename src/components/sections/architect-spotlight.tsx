@@ -2,6 +2,7 @@
 
 import Link from "next/link";
 import { Reveal } from "@/components/motion/reveal";
+import { CountUp } from "@/components/motion/count-up";
 import { siteConfig } from "@/lib/site-config";
 
 const PILLARS = [
@@ -24,7 +25,7 @@ const PILLARS = [
 
 export function ArchitectSpotlight() {
   return (
-    <section className="relative overflow-hidden border-t border-line bg-surface-alt py-28 sm:py-36 lg:py-44">
+    <section id="about" className="relative overflow-hidden border-t border-line bg-surface-alt py-28 sm:py-36 lg:py-44">
       {/* Section number */}
       <span
         aria-hidden
@@ -69,16 +70,10 @@ export function ArchitectSpotlight() {
             <Reveal delay={0.3}>
               <div className="mt-10 flex flex-wrap items-center gap-4">
                 <Link
-                  href="/about"
+                  href="#contact"
                   className="label inline-flex items-center gap-2 border border-line-strong px-6 py-3.5 text-ink-soft transition-colors hover:border-gold/50 hover:text-gold"
                 >
-                  About the Architect <span aria-hidden>→</span>
-                </Link>
-                <Link
-                  href="/contact"
-                  className="label inline-flex items-center gap-2 text-gold transition-opacity hover:opacity-70"
-                >
-                  Schedule Consultation
+                  Schedule Consultation <span aria-hidden>→</span>
                 </Link>
               </div>
             </Reveal>
@@ -113,11 +108,15 @@ export function ArchitectSpotlight() {
             <Reveal delay={0.4}>
               <div className="mt-10 grid grid-cols-2 gap-6 border-t border-line pt-10">
                 <div>
-                  <p className="font-display text-4xl font-light text-ink">100+</p>
+                  <p className="font-display text-4xl font-light text-ink">
+                    <CountUp value={100} suffix="+" />
+                  </p>
                   <p className="label mt-1 text-ink-faint">Spaces Transformed</p>
                 </div>
                 <div>
-                  <p className="font-display text-4xl font-light text-gold">100%</p>
+                  <p className="font-display text-4xl font-light text-gold">
+                    <CountUp value={100} suffix="%" />
+                  </p>
                   <p className="label mt-1 text-ink-faint">Turnkey Execution</p>
                 </div>
               </div>
