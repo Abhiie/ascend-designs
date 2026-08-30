@@ -82,7 +82,7 @@ export function Testimonials() {
       <div className="relative mx-auto max-w-[1600px] px-6 sm:px-12 lg:px-20">
         {/* Header */}
         <Reveal>
-          <div className="mb-16 flex items-center gap-5">
+          <div className="mb-8 flex items-center gap-5">
             <span className="h-px w-10 bg-gold/50" />
             <p className="label text-gold/80">Client Experiences</p>
           </div>

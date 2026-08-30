@@ -6,7 +6,6 @@ import { Services } from "@/components/sections/services";
 import { TurnkeyProcess } from "@/components/sections/turnkey-process";
 import { Testimonials } from "@/components/sections/testimonials";
 import { Faq } from "@/components/sections/faq";
-import { FinalCta } from "@/components/sections/final-cta";
 import { ContactSection } from "@/components/sections/contact-section";
 import { LocationMap } from "@/components/ui/location-map";
 
@@ -35,10 +34,7 @@ export default function Home() {
       {/* 7. FAQ */}
       <Faq />
 
-      {/* 8. Final CTA */}
-      <FinalCta />
-
-      {/* 9. Contact — form + studio location */}
+      {/* 8. Contact — form + studio location */}
       <ContactSection />
       <LocationMap />
     </main>

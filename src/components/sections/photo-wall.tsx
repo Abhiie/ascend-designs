@@ -320,7 +320,7 @@ export function ProjectWall() {
 
   return (
     <>
-      <section id="work" className="px-4 pb-32 pt-28 sm:px-8 sm:pb-40 sm:pt-36 lg:px-12 lg:pb-48 lg:pt-44">
+      <section id="work" className="px-4 pb-24 pt-14 sm:px-8 sm:pb-32 sm:pt-16 lg:px-12 lg:pb-40 lg:pt-20">
         <div className="mx-auto max-w-[1600px]">
           {/* ── Header ──────────────────────────────────────────────────── */}
           <Reveal>

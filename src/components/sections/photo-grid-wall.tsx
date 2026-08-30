@@ -10,15 +10,20 @@ interface FlatPhoto {
   projectTitle: string;
   location: string;
   year: number;
+  /** The first photo of each project's gallery — rendered as a larger
+   * feature tile so the grid reads as a masonry wall rather than a flat,
+   * uniform sheet of identical squares. */
+  isFeature: boolean;
 }
 
 const ALL_PHOTOS: FlatPhoto[] = projects.flatMap((p) =>
-  p.gallery.map((src) => ({
+  p.gallery.map((src, i) => ({
     src,
     projectId: p.id,
     projectTitle: p.title,
     location: p.location,
     year: p.year,
+    isFeature: i === 0,
   }))
 );
 
@@ -169,7 +174,9 @@ function GridTile({
       data-cursor="view"
       data-cursor-label="View"
       onClick={onClick}
-      className="group relative block aspect-square w-full overflow-hidden bg-surface-strong"
+      className={`group relative block h-full w-full overflow-hidden bg-surface-strong ${
+        photo.isFeature ? "col-span-2 row-span-2" : "col-span-1 row-span-1"
+      }`}
       style={{ opacity: 0 }}
       aria-label={`View photo from ${photo.projectTitle}`}
     >
@@ -181,13 +188,17 @@ function GridTile({
         decoding="async"
         className="h-full w-full object-cover transition-transform duration-500 ease-out group-hover:scale-110"
       />
-      <div className="pointer-events-none absolute inset-0 flex flex-col items-center justify-center gap-1.5 bg-[#0c0b09]/0 opacity-0 transition-all duration-300 group-hover:bg-[#0c0b09]/55 group-hover:opacity-100">
-        <span aria-hidden className="text-lg text-white">
-          ♡
-        </span>
-        <span className="label px-3 text-center text-[0.5rem] text-white/85 line-clamp-1">
+
+      {/* Caption panel — slides up from below on hover instead of a flat
+          full-tile overlay, so the photo itself stays clear until then. */}
+      <div className="pointer-events-none absolute inset-x-0 bottom-0 translate-y-full bg-gradient-to-t from-[#0c0b09]/95 via-[#0c0b09]/75 to-transparent px-3 pb-3 pt-8 transition-transform duration-400 ease-out group-hover:translate-y-0 sm:px-4 sm:pb-4">
+        <span aria-hidden className="mb-1.5 block h-[2px] w-8 bg-gold" />
+        <p className="font-display text-sm leading-tight text-white line-clamp-1 sm:text-base">
           {photo.projectTitle}
-        </span>
+        </p>
+        <p className="label mt-1 text-[0.5rem] text-white/60">
+          {photo.location} · {photo.year}
+        </p>
       </div>
     </button>
   );
@@ -268,10 +279,12 @@ export function PhotoGridWall() {
         </div>
       </div>
 
-      {/* Instagram-style dense square grid */}
+      {/* Masonry-style grid — a large feature tile opens each project's run
+          of photos, packed dense so the layout still reads as one continuous
+          wall rather than a strict uniform sheet. */}
       <div
         key={activeClient}
-        className="grid grid-cols-3 gap-[3px] sm:grid-cols-4 sm:gap-1 lg:grid-cols-6"
+        className="grid auto-rows-[120px] grid-cols-3 gap-[3px] [grid-auto-flow:dense] sm:auto-rows-[150px] sm:grid-cols-4 sm:gap-1 lg:auto-rows-[220px] lg:grid-cols-6"
       >
         {filtered.map((photo, i) => (
           <GridTile
