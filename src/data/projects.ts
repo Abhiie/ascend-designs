@@ -98,8 +98,14 @@ export const projects: Project[] = [
       "/projects/alayam madhuvan/003_.webp",
       "/projects/alayam madhuvan/005_.webp",
       "/projects/alayam madhuvan/006_.webp",
-      "/projects/alayam madhuvan/007_.webp",
-      "/projects/alayam madhuvan/008_.webp",
+      "/projects/alayam madhuvan/1_.webp",
+      "/projects/alayam madhuvan/1_ (2).webp",
+      "/projects/alayam madhuvan/2_.webp",
+      "/projects/alayam madhuvan/2_ (2).webp",
+      "/projects/alayam madhuvan/25_.webp",
+      "/projects/alayam madhuvan/3_.webp",
+      "/projects/alayam madhuvan/3_ (2).webp",
+      "/projects/alayam madhuvan/4_.webp",
     ],
     featured: false,
     services: ["Interior Design", "Turnkey Projects"],
@@ -225,13 +231,4 @@ export const projects: Project[] = [
     services: ["Interior Design", "Turnkey Projects"],
     layout: "portrait",
   },
-];
-
-export const filterCategories: { label: string; value: ProjectCategory | "all" }[] = [
-  { label: "All Work", value: "all" },
-  { label: "Residential", value: "residential" },
-  { label: "Interiors", value: "interiors" },
-  { label: "Commercial", value: "commercial" },
-  { label: "Architecture", value: "architecture" },
-  { label: "Turnkey", value: "turnkey" },
 ];

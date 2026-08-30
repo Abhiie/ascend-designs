@@ -11,8 +11,6 @@ export const stockImages = {
     "https://images.unsplash.com/photo-1701422052384-947b60e17ebe?q=80&w=2400&auto=format&fit=crop",
   adLivingJoinery:
     "https://images.unsplash.com/photo-1720391793902-06a80038b1ed?q=80&w=1600&auto=format&fit=crop",
-  adLivingTextile:
-    "https://images.unsplash.com/photo-1623658423238-8307df454e11?q=80&w=1600&auto=format&fit=crop",
   adLivingDecor:
     "https://images.unsplash.com/photo-1607710533910-d7cdffd9e593?q=80&w=1600&auto=format&fit=crop",
   finalCta:
