@@ -59,8 +59,12 @@ function AnimChars({
         <span
           key={i}
           data-hero-char
-          className={`inline-block ${className}`}
-          style={{ willChange: "transform, opacity" }}
+          className={`inline-block opacity-0 ${className}`}
+          style={{
+            willChange: "transform, opacity",
+            transform: "translate3d(0, 40px, 0) rotateX(-90deg)",
+            transformOrigin: "top center",
+          }}
         >
           {ch === " " ? "\u00A0" : ch}
         </span>
@@ -81,7 +85,6 @@ export function Hero() {
     const ctx = gsap.context(() => {
       gsap.set("[data-hero-frame]", { scale: 1.12 });
       gsap.set("[data-hero-eyebrow]", { opacity: 0, y: 16 });
-      // Each character starts invisible, dropped down, and slightly rotated
       gsap.set("[data-hero-char]", { opacity: 0, y: 40, rotateX: -90, transformOrigin: "top center" });
       gsap.set("[data-hero-flap]", { opacity: 0, y: 16 });
       gsap.set("[data-hero-rule]", { scaleX: 0, transformOrigin: "left center" });
@@ -96,6 +99,10 @@ export function Hero() {
   /* ── Entrance timeline after loader finishes ── */
   useEffect(() => {
     if (!isReady) return;
+    try {
+      var h = document.getElementById("ascend-hero-hide");
+      if (h) h.remove();
+    } catch (e) {}
     const root = rootRef.current;
     if (!root) return;
     const reduced = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
@@ -191,7 +198,7 @@ export function Hero() {
       {/* ── Main Hero Content ── */}
       <div className="relative z-10 flex flex-1 flex-col items-start justify-center px-6 pt-20 pb-4 sm:px-12 sm:pt-28 lg:px-20 lg:pt-32">
         {/* Eyebrow */}
-        <div data-hero-eyebrow className="mb-3 flex items-center gap-3 sm:mb-6 sm:gap-4">
+        <div data-hero-eyebrow className="mb-3 flex items-center gap-3 opacity-0 translate-y-4 sm:mb-6 sm:gap-4">
           <span className="block h-px w-8 bg-gold/70 sm:w-12" />
           <span className="label text-[0.5625rem] tracking-[0.28em] text-gold sm:text-[0.6875rem]">
             Architecture · Interiors · Turnkey
@@ -216,13 +223,13 @@ export function Hero() {
         {/* Rule */}
         <span
           data-hero-rule
-          className="mt-5 block h-px w-16 bg-gold/60 sm:mt-7 sm:w-24"
+          className="mt-5 block h-px w-16 bg-gold/60 origin-left scale-x-0 sm:mt-7 sm:w-24"
         />
 
         {/* Sub-heading */}
         <p
           data-hero-sub
-          className="mt-4 max-w-lg text-[0.875rem] leading-relaxed text-white/70 sm:mt-6 sm:text-[0.9375rem] md:text-base"
+          className="mt-4 max-w-lg text-[0.875rem] leading-relaxed text-white/70 opacity-0 translate-y-4 sm:mt-6 sm:text-[0.9375rem] md:text-base"
         >
           Architecture, interiors and turnkey execution — shaped around the
           people who will live in the space, delivered as one continuous
@@ -234,7 +241,7 @@ export function Hero() {
           <Link
             data-hero-cta
             href="#work"
-            className="btn-shimmer label inline-flex items-center justify-center gap-2 px-5 py-3 text-[0.625rem] text-[#0c0b09] transition-opacity hover:opacity-90 sm:gap-3 sm:px-8 sm:py-4 sm:text-xs"
+            className="btn-shimmer label inline-flex items-center justify-center gap-2 px-5 py-3 text-[0.625rem] text-[#0c0b09] opacity-0 translate-y-5 transition-opacity hover:opacity-90 sm:gap-3 sm:px-8 sm:py-4 sm:text-xs"
           >
             <AnimChars text="Explore Portfolio" />
             <span aria-hidden>→</span>
@@ -242,7 +249,7 @@ export function Hero() {
           <Link
             data-hero-cta
             href="/about"
-            className="label inline-flex items-center justify-center gap-2 border border-white/25 px-5 py-3 text-[0.625rem] text-white/80 transition-colors hover:border-gold/60 hover:text-gold sm:gap-3 sm:px-8 sm:py-4 sm:text-xs"
+            className="label inline-flex items-center justify-center gap-2 border border-white/25 px-5 py-3 text-[0.625rem] text-white/80 opacity-0 translate-y-5 transition-colors hover:border-gold/60 hover:text-gold sm:gap-3 sm:px-8 sm:py-4 sm:text-xs"
           >
             <AnimChars text="Our Story" />
           </Link>
@@ -251,7 +258,7 @@ export function Hero() {
         {/* ── Specializing In section — all aligned in a single line ── */}
         <div
           data-hero-flap
-          className="mt-6 flex flex-row items-center gap-3 sm:mt-7 sm:gap-4 max-w-full overflow-x-auto"
+          className="mt-6 flex flex-row items-center gap-3 opacity-0 translate-y-4 sm:mt-7 sm:gap-4 max-w-full overflow-x-auto"
           style={{ scrollbarWidth: "none" }}
         >
           <div className="flex items-center gap-2 shrink-0">

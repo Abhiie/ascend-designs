@@ -32,6 +32,12 @@ export const bootScript = `
     if (!location.hash) window.scrollTo(0, 0);
   } catch (e) {}
   document.documentElement.style.overflow = "hidden";
+  try {
+    var style = document.createElement("style");
+    style.id = "ascend-hero-hide";
+    style.textContent = "[data-hero-eyebrow],[data-hero-char],[data-hero-sub],[data-hero-cta],[data-hero-flap],[data-hero-scroll],[data-hero-frame]{opacity:0 !important;}";
+    document.head.appendChild(style);
+  } catch (e) {}
 })();
 `;
 
@@ -59,8 +65,8 @@ export function LoaderProvider({ children }: { children: ReactNode }) {
   return (
     <ReadyContext.Provider value={ready}>
       <SettledContext.Provider value={settled}>
-        {children}
         <Loader onDone={() => setReady(true)} onSettled={() => setSettled(true)} />
+        {children}
       </SettledContext.Provider>
     </ReadyContext.Provider>
   );
@@ -79,16 +85,14 @@ function DoorLeaf({ side }: { side: "left" | "right" }) {
     <div
       data-door
       data-door-side={side}
-      className="relative h-full w-1/2 will-change-transform"
+      className="relative h-full w-1/2 will-change-transform bg-[#0c0b09]"
       style={{
         transformOrigin: side === "left" ? "left center" : "right center",
         backfaceVisibility: "hidden",
-        // Base tone and its soft sheen live on one painted layer. A finer
-        // repeating grain reads better up close but forces a full-viewport
-        // re-raster on every frame of the 3D swing, which is not worth it.
+        backgroundColor: "#0c0b09",
         background: `linear-gradient(${
           side === "left" ? "100deg" : "260deg"
-        }, rgba(201,169,110,0.08) 0%, rgba(201,169,110,0) 60%), var(--surface)`,
+        }, rgba(201,169,110,0.08) 0%, rgba(201,169,110,0) 60%), #0c0b09`,
       }}
     >
       {/* Recessed panels. */}
@@ -143,11 +147,12 @@ function Loader({ onDone, onSettled }: { onDone: () => void; onSettled: () => vo
 
     /** Hands the page over to the hero, while the doors are still swinging. */
     function finish() {
-      // Re-assert the top before releasing the lock: anything that nudged the
-      // offset while the page was locked would otherwise be revealed as a
-      // half-scrolled hero the moment the doors part.
       if (!window.location.hash) window.scrollTo(0, 0);
       document.documentElement.style.overflow = "";
+      try {
+        var h = document.getElementById("ascend-hero-hide");
+        if (h) h.remove();
+      } catch (e) {}
       onDoneRef.current();
     }
 
