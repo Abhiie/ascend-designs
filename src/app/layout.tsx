@@ -27,6 +27,13 @@ export const metadata: Metadata = {
   title: "Ascend Designs | Architecture & Interior Design Studio in Ahmedabad",
   description:
     "Ascend Designs is an Ahmedabad-based architecture and interior design studio creating thoughtful residential and commercial spaces through architecture, interiors and turnkey solutions.",
+  icons: {
+    icon: [
+      { url: "/favicon.ico" },
+      { url: "/icon.png", type: "image/png" },
+    ],
+    apple: "/apple-icon.png",
+  },
   openGraph: {
     title: "Ascend Designs | Architecture & Interior Design Studio in Ahmedabad",
     description:
