@@ -3,7 +3,8 @@
 import { useEffect, useRef, useState } from "react";
 import Image from "next/image";
 import Link from "next/link";
-import { gsap } from "@/lib/gsap";
+import { usePathname } from "next/navigation";
+import { gsap, ScrollTrigger } from "@/lib/gsap";
 import { siteConfig, socialLinks } from "@/lib/site-config";
 
 const marqueeItems = [
@@ -21,6 +22,7 @@ export function Footer() {
   const [scrollProgress, setScrollProgress] = useState(0);
   const [istTime, setIstTime] = useState<string>("");
   const [copied, setCopied] = useState(false);
+  const pathname = usePathname();
 
   // Live IST Clock
   useEffect(() => {
@@ -56,35 +58,40 @@ export function Footer() {
     return () => window.removeEventListener("scroll", onScroll);
   }, []);
 
-  // GSAP scroll-triggered entrance animations
+  // GSAP scroll-triggered entrance animations with guarantee of visibility on all routes
   useEffect(() => {
     const wrap = wrapRef.current;
     const wordmark = wordmarkRef.current;
     if (!wrap) return;
 
+    // Immediately ensure footer is visible across all routes
+    gsap.set(".footer-row", { y: 0, opacity: 1 });
+    gsap.set(".footer-line", { scaleX: 1 });
+    if (wordmark) gsap.set(wordmark, { yPercent: 0, opacity: 1 });
+
     const reduced = window.matchMedia(
       "(prefers-reduced-motion: reduce)"
     ).matches;
 
-    if (reduced) {
-      if (wordmark) gsap.set(wordmark, { yPercent: 0, opacity: 1 });
-      gsap.set(".footer-row", { y: 0, opacity: 1 });
-      gsap.set(".footer-line", { scaleX: 1 });
-      return;
-    }
+    if (reduced) return;
+
+    // Refresh ScrollTrigger so coordinates match current page content
+    const timer = setTimeout(() => {
+      ScrollTrigger.refresh();
+    }, 120);
 
     const ctx = gsap.context(() => {
       // ── Wordmark watermark reveal ───────────────────────────────
       if (wordmark) {
         gsap.fromTo(
           wordmark,
-          { yPercent: 40, opacity: 0 },
+          { yPercent: 30, opacity: 0.3 },
           {
             yPercent: 0,
             opacity: 1,
-            duration: 1.2,
+            duration: 1.0,
             ease: "power3.out",
-            scrollTrigger: { trigger: wrap, start: "top 85%" },
+            scrollTrigger: { trigger: wrap, start: "top 95%" },
           }
         );
       }
@@ -92,14 +99,14 @@ export function Footer() {
       // ── Row reveal ───────────────────────────────────────────────
       gsap.fromTo(
         ".footer-row",
-        { y: 24, opacity: 0 },
+        { y: 16, opacity: 0.8 },
         {
           y: 0,
           opacity: 1,
-          duration: 0.9,
+          duration: 0.7,
           ease: "power3.out",
-          stagger: 0.12,
-          scrollTrigger: { trigger: wrap, start: "top 88%" },
+          stagger: 0.08,
+          scrollTrigger: { trigger: wrap, start: "top 95%" },
         }
       );
 
@@ -109,15 +116,18 @@ export function Footer() {
         { scaleX: 0 },
         {
           scaleX: 1,
-          duration: 1.2,
+          duration: 0.9,
           ease: "power3.inOut",
-          scrollTrigger: { trigger: ".footer-line", start: "top 95%" },
+          scrollTrigger: { trigger: ".footer-line", start: "top 98%" },
         }
       );
     }, wrap);
 
-    return () => ctx.revert();
-  }, []);
+    return () => {
+      clearTimeout(timer);
+      ctx.revert();
+    };
+  }, [pathname]);
 
   function scrollToTop() {
     window.scrollTo({ top: 0, behavior: "smooth" });
