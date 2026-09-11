@@ -344,7 +344,7 @@ function Loader({ onDone, onSettled }: { onDone: () => void; onSettled: () => vo
     <div
       ref={rootRef}
       aria-hidden
-      className="pointer-events-none fixed inset-0 z-[200] overflow-hidden"
+      className="pointer-events-none fixed inset-0 z-[99999] overflow-hidden"
     >
       {/* Warm light waiting behind the doors. */}
       <div
