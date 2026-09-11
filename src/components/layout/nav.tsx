@@ -1,145 +1,320 @@
 "use client";
 
+import Image from "next/image";
 import Link from "next/link";
-import { usePathname } from "next/navigation";
+import { usePathname, useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
 import { navLinks, siteConfig } from "@/lib/site-config";
 import { ThemeSwitch } from "@/components/ui/theme-switch";
+import { useTheme } from "@/components/providers/theme-provider";
+import { ProjectInquiryModal } from "@/components/ui/project-inquiry-modal";
 
 export function Nav() {
   const [scrolled, setScrolled] = useState(false);
+  const [hidden, setHidden] = useState(false);
+  const [scrollProgress, setScrollProgress] = useState(0);
   const [menuOpen, setMenuOpen] = useState(false);
+  const [inquiryOpen, setInquiryOpen] = useState(false);
   const pathname = usePathname();
+  const router = useRouter();
   const isHomePage = pathname === "/";
-  // On the home page at the very top we float over the dark hero — always
-  // treat the bar as "on dark" since the site is now dark-first.
-  const onDark = true;
+  const { theme } = useTheme();
+
+  // Invalidate any 308 redirects that the browser may have cached in disk cache
+  useEffect(() => {
+    const routesToClear = ["/about", "/services", "/faq", "/contact"];
+    routesToClear.forEach((r) => {
+      fetch(r, { cache: "reload", method: "HEAD" }).catch(() => {});
+    });
+  }, []);
+
+  function handleNavClick(
+    e: React.MouseEvent<HTMLAnchorElement>,
+    href: string
+  ) {
+    setMenuOpen(false);
+    if (pathname === href) {
+      e.preventDefault();
+      window.scrollTo({ top: 0, behavior: "smooth" });
+      return;
+    }
+  }
 
   useEffect(() => {
+    let lastScrollY = window.scrollY;
     let ticking = false;
+
     function onScroll() {
       if (ticking) return;
       ticking = true;
       requestAnimationFrame(() => {
-        setScrolled(window.scrollY > 60);
+        const currentScrollY = window.scrollY;
+        const docHeight =
+          document.documentElement.scrollHeight - window.innerHeight;
+        setScrollProgress(
+          docHeight > 0 ? (currentScrollY / docHeight) * 100 : 0
+        );
+        setScrolled(currentScrollY > 40);
+
+        // Smart auto-hide: only hide when scrolling down past 140px and not at bottom
+        if (currentScrollY > 140 && currentScrollY > lastScrollY + 8) {
+          setHidden(true);
+        } else if (currentScrollY < lastScrollY - 6 || currentScrollY <= 60) {
+          setHidden(false);
+        }
+
+        lastScrollY = currentScrollY;
         ticking = false;
       });
     }
+
     window.addEventListener("scroll", onScroll, { passive: true });
     return () => window.removeEventListener("scroll", onScroll);
   }, []);
 
   useEffect(() => {
     document.body.style.overflow = menuOpen ? "hidden" : "";
-    return () => { document.body.style.overflow = ""; };
+    return () => {
+      document.body.style.overflow = "";
+    };
   }, [menuOpen]);
+
+  const isNavHidden = hidden && !menuOpen;
 
   return (
     <header
-      className="fixed inset-x-0 top-0 z-50 transition-[background-color,border-color] duration-500"
+      className={`fixed inset-x-0 top-0 z-50 transition-[transform,background-color,border-color,box-shadow] duration-500 ease-[cubic-bezier(0.16,1,0.3,1)] ${
+        isNavHidden ? "-translate-y-full" : "translate-y-0"
+      }`}
       style={{
-        borderBottom: scrolled || !isHomePage ? "1px solid var(--line)" : "1px solid transparent",
+        borderBottom:
+          scrolled || !isHomePage
+            ? "1px solid var(--line)"
+            : "1px solid transparent",
         backgroundColor:
           scrolled || !isHomePage
-            ? "rgba(12,11,9,0.88)"
+            ? theme === "light"
+              ? "rgba(250, 248, 244, 0.88)"
+              : "rgba(12, 11, 9, 0.85)"
             : "transparent",
-        backdropFilter: scrolled || !isHomePage ? "blur(12px)" : "none",
+        backdropFilter: scrolled || !isHomePage ? "blur(16px)" : "none",
+        boxShadow:
+          scrolled || !isHomePage
+            ? "0 10px 30px -10px rgba(0,0,0,0.35)"
+            : "none",
       }}
     >
       <div
         className={`mx-auto flex max-w-[1600px] items-center justify-between px-6 transition-[padding] duration-500 sm:px-10 lg:px-16 ${
-          scrolled ? "py-3" : "py-5 sm:py-6"
+          scrolled ? "py-3 sm:py-3.5" : "py-5 sm:py-6"
         }`}
       >
-        {/* Logo */}
-        <Link href="/" className="relative z-10 flex items-baseline gap-1">
-          <span className="font-display text-xl font-light tracking-[0.12em] text-ink sm:text-2xl">
-            ASCEND
-          </span>
-          <span className="font-display text-xl font-light text-gold sm:text-2xl">.</span>
+        {/* Official Brand Logo */}
+        <Link
+          href="/"
+          className="group relative z-10 flex items-center"
+          aria-label="Ascend Designs - Home"
+        >
+          <div className="relative h-[30px] w-[124px] overflow-hidden transition-transform duration-300 ease-out group-hover:scale-[1.03] sm:h-8 sm:w-[132px] md:h-9 md:w-[149px]">
+            {/* Dark surface / hero logo */}
+            <Image
+              src="/ascend-logo-dark.png"
+              alt="Ascend Designs"
+              fill
+              priority
+              sizes="(max-width: 640px) 124px, 149px"
+              className={`object-contain transition-opacity duration-300 ${
+                !scrolled && isHomePage
+                  ? "opacity-100"
+                  : theme === "light"
+                  ? "opacity-0"
+                  : "opacity-100"
+              }`}
+            />
+            {/* Light surface logo */}
+            <Image
+              src="/ascend-logo.png"
+              alt="Ascend Designs"
+              fill
+              priority
+              sizes="(max-width: 640px) 124px, 149px"
+              className={`object-contain transition-opacity duration-300 ${
+                !scrolled && isHomePage
+                  ? "opacity-0"
+                  : theme === "light"
+                  ? "opacity-100"
+                  : "opacity-0"
+              }`}
+            />
+            {/* Interactive gold sheen sweep on hover */}
+            <span
+              aria-hidden
+              className="logo-sheen pointer-events-none absolute inset-y-0 -left-full w-full opacity-0"
+              style={{
+                background:
+                  "linear-gradient(105deg, transparent 25%, rgba(201,169,110,0.65) 50%, transparent 75%)",
+              }}
+            />
+          </div>
         </Link>
 
         {/* Desktop nav */}
-        <nav className="hidden items-center gap-10 lg:flex" aria-label="Primary">
+        <nav
+          className="hidden items-center gap-8 lg:flex xl:gap-10"
+          aria-label="Primary"
+        >
           {navLinks.map((link) => {
             const isActive = pathname === link.href;
             return (
               <Link
                 key={link.href}
                 href={link.href}
-                className={`label text-[0.625rem] tracking-[0.2em] transition-colors hover:text-gold ${
-                  isActive ? "text-gold" : "text-ink-soft"
+                prefetch={false}
+                onClick={(e) => handleNavClick(e, link.href)}
+                className={`group relative py-1 text-[0.6875rem] font-medium tracking-[0.2em] uppercase transition-colors duration-300 ${
+                  isActive ? "text-gold" : "text-ink-soft hover:text-ink"
                 }`}
               >
-                {link.label}
+                <span className="relative z-10 inline-block transition-transform duration-300 group-hover:-translate-y-0.5">
+                  {link.label}
+                </span>
+
+                {/* Active indicator dot */}
+                {isActive && (
+                  <span className="absolute -left-2.5 top-1/2 h-1 w-1 -translate-y-1/2 rounded-full bg-gold shadow-[0_0_8px_#c9a96e]" />
+                )}
+
+                {/* Sliding underline */}
+                <span
+                  className={`absolute bottom-0 left-0 h-[1.5px] bg-gold/90 transition-all duration-300 ease-out ${
+                    isActive ? "w-full opacity-100" : "w-0 opacity-0 group-hover:w-full group-hover:opacity-100"
+                  }`}
+                />
               </Link>
             );
           })}
         </nav>
 
         {/* Desktop actions */}
-        <div className="hidden items-center gap-8 lg:flex">
+        <div className="hidden items-center gap-6 lg:flex xl:gap-8">
           <ThemeSwitch tone="light" />
-          <Link
-            href="/#contact"
-            className="label inline-flex items-center gap-2 border border-white/20 px-5 py-2.5 text-ink transition-colors hover:border-gold/60 hover:text-gold"
+          <button
+            type="button"
+            onClick={() => setInquiryOpen(true)}
+            className="group relative inline-flex items-center gap-2.5 overflow-hidden border border-white/20 bg-white/[0.03] px-5 py-2.5 text-[0.6875rem] font-medium tracking-[0.2em] uppercase text-ink backdrop-blur-sm transition-all duration-300 hover:border-gold/70 hover:bg-gold/[0.08] hover:text-gold hover:shadow-[0_0_20px_rgba(201,169,110,0.2)] cursor-pointer"
           >
-            Start a Project <span aria-hidden>→</span>
-          </Link>
+            {/* Shimmer sweep highlight */}
+            <span
+              aria-hidden
+              className="pointer-events-none absolute inset-y-0 -left-full w-full bg-gradient-to-r from-transparent via-gold/30 to-transparent transition-transform duration-700 ease-out group-hover:translate-x-[250%]"
+            />
+            <span className="relative z-10">Start a Project</span>
+            <span
+              aria-hidden
+              className="relative z-10 transition-transform duration-300 ease-out group-hover:translate-x-1"
+            >
+              →
+            </span>
+          </button>
         </div>
 
-        {/* Hamburger */}
+        {/* Animated Hamburger Button */}
         <button
           type="button"
           onClick={() => setMenuOpen((v) => !v)}
           aria-expanded={menuOpen}
           aria-label={menuOpen ? "Close menu" : "Open menu"}
-          className="relative z-10 flex h-10 w-10 flex-col items-center justify-center gap-[5px] lg:hidden"
+          className="group relative z-50 flex h-10 w-10 flex-col items-center justify-center gap-1.5 rounded-full border border-white/10 transition-colors hover:border-gold/50 lg:hidden"
         >
           <span
-            className={`h-px w-5 bg-ink transition-transform duration-300 ${
-              menuOpen ? "translate-y-[3px] rotate-45" : ""
+            className={`h-[1.5px] w-5 bg-ink transition-all duration-300 ease-out ${
+              menuOpen ? "translate-y-[4.5px] rotate-45 bg-gold" : ""
             }`}
           />
           <span
-            className={`h-px w-5 bg-ink transition-transform duration-300 ${
-              menuOpen ? "-translate-y-[3px] -rotate-45" : ""
+            className={`h-[1.5px] w-5 bg-ink transition-all duration-300 ease-out ${
+              menuOpen ? "-translate-y-[3px] -rotate-45 bg-gold" : ""
             }`}
           />
         </button>
       </div>
 
-      {/* Mobile fullscreen overlay */}
+      {/* Scroll Progress Hairline */}
       <div
-        className={`fixed inset-0 z-0 flex flex-col justify-between bg-surface px-8 pt-28 pb-12 transition-opacity duration-400 lg:hidden ${
-          menuOpen ? "pointer-events-auto opacity-100" : "pointer-events-none opacity-0"
+        className="pointer-events-none absolute bottom-0 left-0 h-[1.5px] bg-gradient-to-r from-transparent via-gold to-transparent transition-opacity duration-300"
+        style={{
+          width: `${scrollProgress}%`,
+          opacity: scrolled ? 0.85 : 0,
+        }}
+      />
+
+      {/* Mobile Fullscreen Overlay */}
+      <div
+        className={`fixed inset-0 z-40 flex flex-col justify-between overflow-y-auto bg-surface/95 px-8 pt-24 pb-8 backdrop-blur-2xl transition-all duration-500 lg:hidden ${
+          menuOpen
+            ? "pointer-events-auto opacity-100 translate-y-0"
+            : "pointer-events-none opacity-0 -translate-y-4"
         }`}
       >
-        <nav className="flex flex-col" aria-label="Mobile">
+        {/* Subtle ambient gold radial background */}
+        <div
+          aria-hidden
+          className="pointer-events-none absolute -top-20 -right-20 h-80 w-80 rounded-full bg-gold/10 blur-3xl"
+        />
+
+        <nav className="relative z-10 flex flex-col" aria-label="Mobile Navigation">
           {navLinks.map((link, i) => {
             const isActive = pathname === link.href;
             return (
               <Link
                 key={link.href}
                 href={link.href}
-                onClick={() => setMenuOpen(false)}
-                className={`border-b border-line py-5 font-display text-[2.5rem] font-light leading-tight transition-colors ${
-                  isActive ? "text-gold" : "text-ink hover:text-gold"
+                prefetch={false}
+                onClick={(e) => handleNavClick(e, link.href)}
+                className={`group flex items-center justify-between border-b border-line py-4.5 font-display text-[2rem] font-light leading-tight transition-all duration-300 sm:text-[2.5rem] ${
+                  isActive ? "text-gold pl-2" : "text-ink hover:text-gold hover:pl-2"
                 }`}
-                style={{ transitionDelay: menuOpen ? `${i * 45}ms` : "0ms" }}
+                style={{
+                  transitionDelay: menuOpen ? `${i * 50}ms` : "0ms",
+                }}
               >
-                {link.label}
+                <span>{link.label}</span>
+                <span
+                  aria-hidden
+                  className={`text-sm tracking-widest text-gold/60 transition-transform duration-300 group-hover:translate-x-1 ${
+                    isActive ? "opacity-100" : "opacity-0 group-hover:opacity-100"
+                  }`}
+                >
+                  ↗
+                </span>
               </Link>
             );
           })}
         </nav>
-        <div className="flex items-center justify-between">
-          <ThemeSwitch tone="light" />
-          <a href={siteConfig.phoneHref} className="label text-ink-faint">
-            {siteConfig.phone}
-          </a>
+
+        <div className="relative z-10 flex flex-col gap-6 pt-6">
+          <button
+            type="button"
+            onClick={() => { setMenuOpen(false); setInquiryOpen(true); }}
+            className="flex items-center justify-center gap-2 border border-gold/40 bg-gold/10 py-3.5 text-center text-xs tracking-[0.2em] uppercase text-gold transition-colors hover:bg-gold hover:text-surface cursor-pointer"
+          >
+            <span>Start a Project</span>
+            <span aria-hidden>→</span>
+          </button>
+
+          <div className="flex items-center justify-between border-t border-line pt-4">
+            <ThemeSwitch tone="light" />
+            <a
+              href={siteConfig.phoneHref}
+              className="label text-[0.625rem] text-ink-faint transition-colors hover:text-gold"
+            >
+              {siteConfig.phone}
+            </a>
+          </div>
         </div>
       </div>
+      {/* Project Inquiry Modal */}
+      <ProjectInquiryModal open={inquiryOpen} onClose={() => setInquiryOpen(false)} />
     </header>
   );
 }

@@ -168,7 +168,7 @@ export function ArchitectSpotlight() {
             <Reveal delay={0.3}>
               <div className="mt-10 flex flex-wrap items-center gap-4">
                 <Link
-                  href="#contact"
+                  href="/contact"
                   className="label inline-flex items-center gap-2 border border-line-strong px-6 py-3.5 text-ink-soft transition-colors hover:border-gold/50 hover:text-gold"
                 >
                   Schedule Consultation <span aria-hidden>→</span>

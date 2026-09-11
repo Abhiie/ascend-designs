@@ -142,6 +142,42 @@ button {
   animation: shimmer 1.4s linear;
 }
 
+/* ── Infinite marquee ───────────────────────────────────────────────────── */
+@keyframes marquee-track {
+  0% { transform: translateX(0); }
+  100% { transform: translateX(-50%); }
+}
+.animate-marquee {
+  display: flex;
+  width: max-content;
+  animation: marquee-track 38s linear infinite;
+  will-change: transform;
+}
+.animate-marquee:hover {
+  animation-play-state: paused;
+}
+
+/* ── Sheen sweep ─────────────────────────────────────────────────────────── */
+@keyframes sheen-sweep {
+  0% { transform: translateX(-130%); opacity: 0; }
+  25% { opacity: 0.85; }
+  75% { opacity: 0.85; }
+  100% { transform: translateX(130%); opacity: 0; }
+}
+.group:hover .logo-sheen {
+  animation: sheen-sweep 1s cubic-bezier(0.2, 0.8, 0.2, 1) forwards;
+}
+
+/* ── Live status pulse ──────────────────────────────────────────────────── */
+@keyframes pulse-ring {
+  0% { transform: scale(1); opacity: 0.75; }
+  50% { transform: scale(1.8); opacity: 0; }
+  100% { transform: scale(1); opacity: 0; }
+}
+.status-pulse {
+  animation: pulse-ring 2.4s cubic-bezier(0.4, 0, 0.6, 1) infinite;
+}
+
 /* ── Reduced motion ─────────────────────────────────────────────────────── */
 @media (prefers-reduced-motion: reduce) {
   .scroll-cue-dot {

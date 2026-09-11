@@ -13,15 +13,17 @@ const nextConfig: NextConfig = {
       },
     ],
   },
-  // About/Services/FAQ/Contact are now sections on the one-page home instead
-  // of their own routes — send any old links or bookmarks to the matching
-  // section rather than 404ing.
-  async redirects() {
+  async headers() {
     return [
-      { source: "/about", destination: "/#about", permanent: true },
-      { source: "/services", destination: "/#services", permanent: true },
-      { source: "/faq", destination: "/#faq", permanent: true },
-      { source: "/contact", destination: "/#contact", permanent: true },
+      {
+        source: "/:path*",
+        headers: [
+          {
+            key: "Cache-Control",
+            value: "no-store, no-cache, must-revalidate",
+          },
+        ],
+      },
     ];
   },
 };

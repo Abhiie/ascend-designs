@@ -24,7 +24,7 @@ export function RoomWalkthrough() {
   const loadBarRef  = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
-    let gsapCtx: any = null;
+    let gsapCtx: gsap.Context | null = null;
     let rafId = 0;
     let lastDrawnTime = -1;
 

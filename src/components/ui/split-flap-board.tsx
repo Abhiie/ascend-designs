@@ -46,14 +46,14 @@ function FlapChar({
     >
       {/* Bottom layer — the letter this tile is flipping toward */}
       <span
-        className={`absolute inset-0 flex items-center justify-center rounded-[3px] border bg-gradient-to-b from-[#211e17] to-[#121009] ${chrome}`}
+        className={`absolute inset-0 flex items-center justify-center rounded-[3px] border bg-gradient-to-b from-[#252119] to-[#14110b] font-bold text-[#e8c98a] ${chrome}`}
       >
         {next}
       </span>
 
       {/* Top flap — covers the tile at rest, rotates away to reveal the letter beneath */}
       <span
-        className={`absolute inset-0 flex items-center justify-center overflow-hidden rounded-[3px] border bg-gradient-to-b from-[#26221a] to-[#16130c] ${chrome}`}
+        className={`absolute inset-0 flex items-center justify-center overflow-hidden rounded-[3px] border bg-gradient-to-b from-[#2a251c] to-[#18140d] font-bold text-[#e8c98a] ${chrome}`}
         style={{
           transformOrigin: "bottom center",
           backfaceVisibility: "hidden",
@@ -126,7 +126,7 @@ export function SplitFlapBoard({
   return (
     <div
       aria-hidden
-      className={`inline-flex items-center gap-[3px] rounded-md border border-white/10 bg-black/40 p-2 shadow-[0_2px_12px_rgba(0,0,0,0.35)] backdrop-blur-sm font-sans text-base font-semibold uppercase tracking-normal text-gold sm:text-lg ${className}`}
+      className={`inline-flex max-w-full items-center gap-[2px] rounded-md border border-white/15 bg-black/60 p-1.5 shadow-[0_4px_20px_rgba(0,0,0,0.5)] backdrop-blur-md font-sans text-[0.7rem] min-[380px]:text-[0.78rem] sm:text-sm md:text-base lg:text-lg font-bold uppercase tracking-normal text-[#e8c98a] sm:gap-[3px] sm:p-2 ${className}`}
     >
       {Array.from({ length: width }).map((_, i) => (
         <FlapChar
