@@ -3,41 +3,61 @@
 import { useEffect, useState } from "react";
 import { Reveal } from "@/components/motion/reveal";
 
+// Real client reviews from Ascend Designs' Google Business listing.
+// Quotes truncated by Google's "… More" are cut at the last complete
+// sentence rather than guessed at; grammar lightly cleaned where noted.
 const TESTIMONIALS = [
   {
     quote:
-      "Working with Ashish Prajapati and the Ascend Designs team transformed our vision into an architectural masterpiece. From site layout to custom millwork, their turnkey execution was flawless.",
-    author: "Rajesh & Meera Shah",
-    role: "Homeowners",
-    project: "The Oakline Villa",
-    location: "SG Highway, Ahmedabad",
+      "I had a great experience working with Ascend Designs for my home interiors. Their team is highly professional, creative, and attentive to detail. They took the time to understand my preferences and lifestyle…",
+    author: "Kishan Patel",
+    role: "Homeowner",
+    project: "Home Interior",
+    location: "Google Review",
     rating: 5,
   },
   {
     quote:
-      "They understood exactly how we wanted to live and work in this space before we could put it into words. The attention to light, acoustic balance, and material finish is extraordinary.",
-    author: "Vikram Patel",
-    role: "Managing Director",
-    project: "Corporate Office Suite",
-    location: "Sindhu Bhavan Road, Ahmedabad",
+      "We are extremely delighted with our new showroom designed by Ascend Designs. The team perfectly understood our vision and transformed it into a modern, functional, and luxurious space that highlights our products beautifully.",
+    author: "Harsh Patel",
+    role: "Showroom Owner",
+    project: "Retail Showroom",
+    location: "Google Review",
     rating: 5,
   },
   {
     quote:
-      "A process that felt deeply considered at every step. Having one unified team handle both architectural design and turnkey contractor work saved us months of effort.",
-    author: "Ananya & Devang Mehta",
-    role: "Homeowners",
-    project: "Penthouse 402",
-    location: "Bodakdev, Ahmedabad",
+      "One of the best interior designers in Gujarat — creative and unique designs by Ashish sir, always a prompt response. Our dream office came through with his help. Thanks a lot!",
+    author: "Meet H Shah",
+    role: "Business Owner",
+    project: "Office Interior",
+    location: "Google Review",
     rating: 5,
   },
   {
     quote:
-      "AD Living custom furniture pieces elevated our entire living room. Every guest who visits asks about the bespoke marble dining setup and wood panelling.",
-    author: "Dr. Siddharth Joshi",
+      "Very good experience — I did my house interior with Ascend Designs and I'm fully satisfied with their work. Their responsive nature helps in every field, and I feel lucky to have found Ascend Designs.",
+    author: "Shaurya Harde",
+    role: "Homeowner",
+    project: "House Interior",
+    location: "Google Review",
+    rating: 5,
+  },
+  {
+    quote:
+      "Working with Ascend Designs for my optical shop interiors was an outstanding experience. Their creativity, attention to detail, and understanding of functional retail design truly brought my vision to life.",
+    author: "Rajdeep Bahel",
+    role: "Business Owner",
+    project: "Optical Shop Interior",
+    location: "Google Review",
+    rating: 5,
+  },
+  {
+    quote: "Best interior designer in Mehsana — creative and budget-friendly designs by Ashish sir.",
+    author: "Sumit Prajapati",
     role: "Client",
-    project: "Luxury Apartment Interior",
-    location: "Ambawadi, Ahmedabad",
+    project: "Interior Design",
+    location: "Mehsana, Gujarat · Google Review",
     rating: 5,
   },
 ];
