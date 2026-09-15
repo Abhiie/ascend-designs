@@ -1,6 +1,7 @@
 "use client";
 
 import { useState } from "react";
+import Link from "next/link";
 import { Reveal } from "@/components/motion/reveal";
 import { ProjectImage } from "@/components/ui/project-image";
 import { stockImages } from "@/lib/stock-images";
@@ -16,6 +17,7 @@ const SERVICES = [
     deliverables: ["Concept Design", "Working Drawings", "Site Supervision", "3D Visualisation"],
     photo: stockImages.architecture,
     tone: 2 as const,
+    href: undefined,
   },
   {
     num: "02",
@@ -26,6 +28,7 @@ const SERVICES = [
     deliverables: ["Space Planning", "Material Selection", "Custom Joinery", "Lighting Design"],
     photo: stockImages.interiors,
     tone: 1 as const,
+    href: undefined,
   },
   {
     num: "03",
@@ -36,6 +39,7 @@ const SERVICES = [
     deliverables: ["Project Management", "Contractor Coordination", "Procurement", "Handover"],
     photo: stockImages.hero,
     tone: 0 as const,
+    href: undefined,
   },
   {
     num: "04",
@@ -46,6 +50,7 @@ const SERVICES = [
     deliverables: ["Bespoke Furniture", "Décor Curation", "Art Selection", "Styling"],
     photo: stockImages.adLivingDecor,
     tone: 3 as const,
+    href: "/ad-living",
   },
 ];
 
@@ -63,12 +68,19 @@ function ServicePanel({
   onActivate: (i: number) => void;
 }) {
   return (
-    <button
-      type="button"
+    <div
+      role="button"
+      tabIndex={0}
       aria-expanded={active}
       onClick={() => onActivate(index)}
+      onKeyDown={(e) => {
+        if (e.key === "Enter" || e.key === " ") {
+          e.preventDefault();
+          onActivate(index);
+        }
+      }}
       onMouseEnter={isFinePointer ? () => onActivate(index) : undefined}
-      className="group relative flex min-h-[110px] overflow-hidden text-left outline-none lg:min-h-0 lg:min-w-[120px]"
+      className="group relative flex min-h-[110px] cursor-pointer overflow-hidden text-left outline-none lg:min-h-0 lg:min-w-[120px]"
       style={{
         flex: active ? "5 1 0px" : "1 1 0px",
         transition: "flex 700ms cubic-bezier(0.65,0,0.35,1)",
@@ -154,6 +166,20 @@ function ServicePanel({
               </li>
             ))}
           </ul>
+          {svc.href && (
+            <Link
+              href={svc.href}
+              onClick={(e) => e.stopPropagation()}
+              className="label mt-6 inline-flex items-center gap-2 text-gold transition-all duration-400 hover:gap-3"
+              style={{
+                opacity: active ? 1 : 0,
+                transform: active ? "translateY(0)" : "translateY(8px)",
+                transitionDelay: active ? "580ms" : "0ms",
+              }}
+            >
+              View AD Living Gallery <span aria-hidden>→</span>
+            </Link>
+          )}
         </div>
       </div>
 
@@ -162,7 +188,7 @@ function ServicePanel({
         className="pointer-events-none absolute inset-y-0 left-0 w-[2px] bg-gold transition-opacity duration-500"
         style={{ opacity: active ? 1 : 0 }}
       />
-    </button>
+    </div>
   );
 }
 
