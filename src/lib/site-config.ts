@@ -1,3 +1,33 @@
+// Studio locations. `offices[0]` (Ahmedabad) is the head office and backs
+// the flat `location` / `shortLocation` / `googleMapsUrl` fields on
+// `siteConfig` below, so single-office call sites keep working unchanged;
+// anything showing every office should read `offices` directly.
+export const offices = [
+  {
+    id: "ahmedabad",
+    label: "Ahmedabad — Head Office",
+    shortLabel: "Ahmedabad",
+    address:
+      "B-545, Money Plant High Street, Sarkhej, Gandhinagar Highways Ahmedabad, Gujarat 382470",
+    shortLocation: "Sarkhej, Ahmedabad, Gujarat",
+    googleMapsUrl:
+      "https://www.google.com/maps/search/?api=1&query=B-545+Money+Plant+High+Street+Sarkhej+Gandhinagar+Highways+Ahmedabad+Gujarat+382470",
+  },
+  {
+    id: "mehsana",
+    label: "Mehsana — Branch Office",
+    shortLabel: "Mehsana",
+    address:
+      "Krushnam Skywalk, T/09, Mehsana, Opposite Nilkanth Restaurant, Radhanpur Road, Mehsana, Gujarat 384002",
+    shortLocation: "Radhanpur Road, Mehsana, Gujarat",
+    googleMapsUrl:
+      "https://www.google.com/maps/search/?api=1&query=" +
+      encodeURIComponent(
+        "Krushnam Skywalk, T/09, Mehsana, Opposite Nilkanth Restaurant, Radhanpur Road, Mehsana, Gujarat 384002"
+      ),
+  },
+] as const;
+
 export const siteConfig = {
   name: "Ascend Designs",
   tagline: "IMAGINE | DESIGN | ELEVATE",
@@ -8,11 +38,9 @@ export const siteConfig = {
   phone: "+91 99795 35383",
   phoneHref: "tel:+919979535383",
   email: "ascenddesigns9@gmail.com",
-  location:
-    "B-545, Money Plant High Street, Sarkhej, Gandhinagar Highways Ahmedabad, Gujarat 382470",
-  shortLocation: "Sarkhej, Ahmedabad, Gujarat",
-  googleMapsUrl:
-    "https://www.google.com/maps/search/?api=1&query=B-545+Money+Plant+High+Street+Sarkhej+Gandhinagar+Highways+Ahmedabad+Gujarat+382470",
+  location: offices[0].address,
+  shortLocation: offices[0].shortLocation,
+  googleMapsUrl: offices[0].googleMapsUrl,
   whatsappHref: "https://wa.me/919979535383",
   instagramHandle: "@ascend_designs",
   instagramHref: "https://www.instagram.com/ascend_designs/",

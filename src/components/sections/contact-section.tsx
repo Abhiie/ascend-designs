@@ -1,6 +1,6 @@
 import { Reveal } from "@/components/motion/reveal";
 import { ContactForm } from "@/components/sections/contact-form";
-import { siteConfig } from "@/lib/site-config";
+import { siteConfig, offices } from "@/lib/site-config";
 
 export function ContactSection() {
   return (
@@ -26,7 +26,19 @@ export function ContactSection() {
 
             <div className="mb-8 flex flex-col border-t border-line">
               {[
-                { label: "Studio Address", content: <p className="text-base font-medium leading-snug text-ink">{siteConfig.location}</p> },
+                {
+                  label: "Studio Addresses",
+                  content: (
+                    <div className="flex flex-col gap-3">
+                      {offices.map((o) => (
+                        <p key={o.id} className="text-base font-medium leading-snug text-ink">
+                          <span className="label mr-2 text-ink-faint">{o.shortLabel}</span>
+                          {o.address}
+                        </p>
+                      ))}
+                    </div>
+                  ),
+                },
                 { label: "Phone Inquiry", content: <a href={siteConfig.phoneHref} className="font-display text-lg text-ink transition-colors hover:text-gold">{siteConfig.phone}</a> },
                 { label: "Email Inquiry", content: <a href={`mailto:${siteConfig.email}`} className="text-base text-ink transition-colors hover:text-gold">{siteConfig.email}</a> },
                 { label: "Instagram", content: <a href={siteConfig.instagramHref} target="_blank" rel="noopener noreferrer" className="text-base text-gold hover:underline">{siteConfig.instagramHandle}</a> },

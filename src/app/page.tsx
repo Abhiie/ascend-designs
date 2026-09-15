@@ -8,10 +8,13 @@ import { Testimonials } from "@/components/sections/testimonials";
 import { Faq } from "@/components/sections/faq";
 import { ContactSection } from "@/components/sections/contact-section";
 import { LocationMap } from "@/components/ui/location-map";
+import { HashScroll } from "@/components/ui/hash-scroll";
 
 export default function Home() {
   return (
     <main className="flex-1">
+      <HashScroll />
+
       {/* 1. Hero — cinematic dark intro */}
       <Hero />
 

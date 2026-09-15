@@ -2,7 +2,7 @@
 
 import { useState } from "react";
 import { Reveal } from "@/components/motion/reveal";
-import { siteConfig } from "@/lib/site-config";
+import { siteConfig, offices } from "@/lib/site-config";
 
 export interface FaqItem {
   question: string;
@@ -26,8 +26,7 @@ export const FAQS: FaqItem[] = [
   {
     category: "Pricing & Location",
     question: "Where is Ascend Designs located, and do you take projects outside Ahmedabad?",
-    answer:
-      `Our main studio is located at ${siteConfig.location}. While the majority of our projects are based in Ahmedabad, Gandhinagar, and surrounding hubs across Gujarat, we regularly accept select high-end residential and commercial assignments across India.`,
+    answer: `We operate from two studios — our ${offices[0].label} at ${offices[0].address}, and our ${offices[1].label} at ${offices[1].address}. While the majority of our projects are based in Ahmedabad, Mehsana, Gandhinagar, and surrounding hubs across Gujarat, we regularly accept select high-end residential and commercial assignments across India.`,
   },
   {
     category: "Process",

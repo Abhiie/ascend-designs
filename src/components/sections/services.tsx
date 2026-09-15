@@ -18,6 +18,7 @@ const SERVICES = [
     photo: stockImages.architecture,
     tone: 2 as const,
     href: undefined,
+    ctaLabel: undefined,
   },
   {
     num: "02",
@@ -29,6 +30,7 @@ const SERVICES = [
     photo: stockImages.interiors,
     tone: 1 as const,
     href: undefined,
+    ctaLabel: undefined,
   },
   {
     num: "03",
@@ -39,7 +41,8 @@ const SERVICES = [
     deliverables: ["Project Management", "Contractor Coordination", "Procurement", "Handover"],
     photo: stockImages.hero,
     tone: 0 as const,
-    href: undefined,
+    href: "/budget-calculator",
+    ctaLabel: "Estimate Your Budget",
   },
   {
     num: "04",
@@ -51,6 +54,7 @@ const SERVICES = [
     photo: stockImages.adLivingDecor,
     tone: 3 as const,
     href: "/ad-living",
+    ctaLabel: "View AD Living Gallery",
   },
 ];
 
@@ -177,7 +181,7 @@ function ServicePanel({
                 transitionDelay: active ? "580ms" : "0ms",
               }}
             >
-              View AD Living Gallery <span aria-hidden>→</span>
+              {svc.ctaLabel} <span aria-hidden>→</span>
             </Link>
           )}
         </div>

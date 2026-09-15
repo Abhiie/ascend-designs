@@ -5,6 +5,14 @@ import Lenis from "lenis";
 import { gsap, ScrollTrigger } from "@/lib/gsap";
 import { useIsSettled } from "@/components/loader/loader";
 
+// Module-level so components outside this provider (e.g. hash-scroll
+// links from other routes) can drive Lenis instead of fighting it with
+// a native `scrollIntoView`.
+let activeLenis: Lenis | null = null;
+export function getLenis() {
+  return activeLenis;
+}
+
 export function SmoothScrollProvider({ children }: { children: ReactNode }) {
   const isSettled = useIsSettled();
 
@@ -26,6 +34,7 @@ export function SmoothScrollProvider({ children }: { children: ReactNode }) {
     });
 
     lenis.on("scroll", ScrollTrigger.update);
+    activeLenis = lenis;
 
     // Drive Lenis off GSAP's ticker (instead of a separate rAF loop) so
     // scroll-linked animations stay perfectly in sync with smooth scroll.
@@ -36,6 +45,7 @@ export function SmoothScrollProvider({ children }: { children: ReactNode }) {
     return () => {
       gsap.ticker.remove(update);
       lenis.destroy();
+      activeLenis = null;
     };
   }, [isSettled]);
 

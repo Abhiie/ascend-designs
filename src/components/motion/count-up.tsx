@@ -8,11 +8,18 @@ interface CountUpProps {
   suffix?: string;
   duration?: number;
   className?: string;
+  /** Custom renderer for the animating number, e.g. currency grouping.
+   * Defaults to `${rounded}${suffix}`. */
+  format?: (rounded: number) => string;
 }
 
 // Animates a number from 0 up to `value` once it scrolls into view.
-export function CountUp({ value, suffix = "", duration = 1.8, className }: CountUpProps) {
+// Re-runs (and animates again) whenever `value` changes while already
+// on screen, so it also works as a live-updating figure, not just a
+// one-time scroll reveal.
+export function CountUp({ value, suffix = "", duration = 1.8, className, format }: CountUpProps) {
   const ref = useRef<HTMLSpanElement>(null);
+  const render = format ?? ((rounded: number) => `${rounded}${suffix}`);
 
   useEffect(() => {
     const el = ref.current;
@@ -20,7 +27,7 @@ export function CountUp({ value, suffix = "", duration = 1.8, className }: Count
 
     const reduced = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
     if (reduced) {
-      el.textContent = `${value}${suffix}`;
+      el.textContent = render(value);
       return;
     }
 
@@ -32,17 +39,17 @@ export function CountUp({ value, suffix = "", duration = 1.8, className }: Count
         ease: "power2.out",
         scrollTrigger: { trigger: el, start: "top 85%", once: true },
         onUpdate: () => {
-          el.textContent = `${Math.round(counter.val)}${suffix}`;
+          el.textContent = render(Math.round(counter.val));
         },
       });
     });
 
     return () => ctx.revert();
-  }, [value, suffix, duration]);
+  }, [value, suffix, duration]); // eslint-disable-line react-hooks/exhaustive-deps
 
   return (
     <span ref={ref} className={className}>
-      0{suffix}
+      {render(0)}
     </span>
   );
 }
